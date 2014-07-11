@@ -1,0 +1,26 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollojt"
+    android:fillViewport="true" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ListView
+            android:id="@+id/oldTestamentList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#f00" >
+        </ListView>
+
+        <ListView
+            android:id="@+id/newTestamentList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/oldTestamentList"
+            android:background="#0f0" >
+        </ListView>
+    </RelativeLayout>
+</ScrollView>

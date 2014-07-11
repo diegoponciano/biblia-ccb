@@ -11,28 +11,32 @@ import com.cubolabs.bibliaofflinearc.DaoSession;
 import com.cubolabs.bibliaofflinearc.Livro;
 import com.cubolabs.bibliaofflinearc.LivroDao;
 import com.cubolabs.bibliaofflinearc.PalavraDao;
+import com.cubolabs.bibliaofflinearc.TestamentoDao;
 
 public class ListaDeLivros {
 	private BibliaDatabase db;
 	private DaoMaster daoMaster;
 	private DaoSession daoSession;
+    private TestamentoDao testamentoDao;
 	private LivroDao livroDao;
-	
-	public ListaDeLivros(Activity activity) {
-		db = new BibliaDatabase(activity);
-		
-		daoMaster = new DaoMaster(db.getReadableDatabase());
+
+    public ListaDeLivros(Activity activity) {
+        db = new BibliaDatabase(activity);
+
+        daoMaster = new DaoMaster(db.getReadableDatabase());
         daoSession = daoMaster.newSession();
-		livroDao = daoSession.getLivroDao();
-	}
-	
-	public List<Livro> Todos() {
-		return livroDao.queryBuilder().build().list();
-	}
-	
+        testamentoDao = daoSession.getTestamentoDao();
+        livroDao = daoSession.getLivroDao();
+    }
+
+    public List<Livro> Todos() {
+        return livroDao.queryBuilder().build().list();
+    }
+
 	public ArrayList<Integer> Capitulos(String nomeDoLivro) {
 		Livro livro = livroDao.queryBuilder()
-						.where(LivroDao.Properties.Nome.eq(nomeDoLivro)).unique();
+						.where(LivroDao.Properties.Nome.eq(nomeDoLivro))
+                        .unique();
 		
 		String idLivro = livro.getId().toString();
 		
@@ -50,14 +54,42 @@ public class ListaDeLivros {
 		
 		return numerosCapitulos;
 	}
-	
+
+    public ArrayList<String> NomesVelhoTestamento() {
+        Long velhoTestamentoId = testamentoDao.queryBuilder()
+                                    .where(TestamentoDao.Properties.Nome.eq("Velho Testamento"))
+                                    .unique()
+                                    .getId();
+        List<Livro> livros = livroDao.queryBuilder()
+                                .where(LivroDao.Properties.Id_testamento.eq(velhoTestamentoId))
+                                .list();
+
+        return this.ListaNomes(livros);
+    }
+
+    public ArrayList<String> NomesNovoTestamento() {
+        Long novoTestamentoId = testamentoDao.queryBuilder()
+                .where(TestamentoDao.Properties.Nome.eq("Novo Testamento"))
+                .unique()
+                .getId();
+        List<Livro> livros = livroDao.queryBuilder()
+                .where(LivroDao.Properties.Id_testamento.eq(novoTestamentoId))
+                .list();
+
+        return this.ListaNomes(livros);
+    }
+
 	public ArrayList<String> TodosNomes() {
-		final ArrayList<String> listaDeNomes = new ArrayList<String>();
-		
-        for (int i = 0; i < this.Todos().size(); ++i) {
-        	listaDeNomes.add(this.Todos().get(i).getNome());
-        }
-        
-        return listaDeNomes;
+        return this.ListaNomes(this.Todos());
 	}
+
+    private ArrayList<String> ListaNomes(List<Livro> livros) {
+        final ArrayList<String> listaDeNomes = new ArrayList<String>();
+
+        for (int i = 0; i < livros.size(); ++i) {
+            listaDeNomes.add(livros.get(i).getNome());
+        }
+
+        return listaDeNomes;
+    }
 }
