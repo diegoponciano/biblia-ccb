@@ -32,7 +32,9 @@ proguard/
 .project
 
 # Android Studio
-.idea
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/datasources.xml
+.idea/dataSources.ids
 .gradle
 build/
