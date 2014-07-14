@@ -11,6 +11,7 @@ import com.cubolabs.bibliaofflinearc.DaoSession;
 import com.cubolabs.bibliaofflinearc.Livro;
 import com.cubolabs.bibliaofflinearc.LivroDao;
 import com.cubolabs.bibliaofflinearc.PalavraDao;
+import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.TestamentoDao;
 
 public class ListaDeLivros {
@@ -67,6 +68,27 @@ public class ListaDeLivros {
         return this.ListaNomes(livros);
     }
 
+    private ArrayList<String> NomesHorizontal(ArrayList<String> nomes){
+        ArrayList<String> nomesHorizontal = new ArrayList<String>();
+        int startIndex = nomes.size()%2==0
+                ? nomes.size()/2
+                : (nomes.size()/2) + 1;
+
+        for (int i = 0; i < startIndex; i++) {
+            nomesHorizontal.add(nomes.get(i));
+        }
+        int evenPosition = 1;
+        for (int i = startIndex; i < nomes.size(); i++) {
+            nomesHorizontal.add(evenPosition, nomes.get(i));
+            evenPosition += 2;
+        }
+        return nomesHorizontal;
+    }
+
+    public ArrayList<String> NomesVelhoTestamentoHorizontal() {
+        return this.NomesHorizontal(this.NomesVelhoTestamento());
+    }
+
     public ArrayList<String> NomesNovoTestamento() {
         Long novoTestamentoId = testamentoDao.queryBuilder()
                 .where(TestamentoDao.Properties.Nome.eq("Novo Testamento"))
@@ -77,6 +99,10 @@ public class ListaDeLivros {
                 .list();
 
         return this.ListaNomes(livros);
+    }
+
+    public ArrayList<String> NomesNovoTestamentoHorizontal() {
+        return this.NomesHorizontal(this.NomesNovoTestamento());
     }
 
 	public ArrayList<String> TodosNomes() {

@@ -4,12 +4,12 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:typeface="serif"
-    android:paddingTop="4dp" >
-
+    android:paddingTop="4dp"
+    android:baselineAligned="false" >
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:gravity="center"
         android:text="@string/oldTestament"
         android:textStyle="bold"
@@ -19,23 +19,26 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1">
-        <ListView
-            android:id="@+id/oldTestamentList"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:divider="#242424"
-            android:dividerHeight="0dp"
-            android:scrollbarStyle="outsideOverlay"
-            android:scrollbars="vertical"
-            android:typeface="serif"
-             />
+        <GridView
+            android:id="@+id/oldTestamentGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scrollbarFadeDuration="0"
+            android:fadeScrollbars="false"
+            android:numColumns="2"
+            android:paddingLeft="5dp"
+            android:paddingTop="0dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/borderbottom" />
     </LinearLayout>
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:gravity="center"
-        android:paddingTop="4dp"
+        android:paddingTop="2dp"
         android:text="@string/newTestament"
         android:textStyle="bold"
         android:id="@+id/textView2" />
@@ -44,15 +47,18 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1">
-        <ListView
-            android:id="@+id/newTestamentList"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:divider="#000000"
-            android:dividerHeight="0dp"
-            android:scrollbarStyle="outsideOverlay"
-            android:scrollbars="vertical"
-            android:typeface="serif"
-             />
+        <GridView
+            android:id="@+id/newTestamentGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scrollbarFadeDuration="0"
+            android:fadeScrollbars="false"
+            android:numColumns="2"
+            android:paddingLeft="5dp"
+            android:paddingTop="0dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/borderbottom" />
     </LinearLayout>
 </LinearLayout>

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -48,9 +49,9 @@ public class LivrosListFragment extends Fragment  {
         ArrayAdapter<String> oldAdapter = new ArrayAdapter<String>(
                         inflater.getContext(),
                         R.layout.livro_list_item_1,
-                        listaDeLivros.NomesVelhoTestamento());
+                        listaDeLivros.NomesVelhoTestamentoHorizontal());
 
-        ListView oldTestamentList = (ListView) v.findViewById(R.id.oldTestamentList);
+        GridView oldTestamentList = (GridView) v.findViewById(R.id.oldTestamentGrid);
         oldTestamentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 onListItemClick(parent, view, position, id);
@@ -61,8 +62,8 @@ public class LivrosListFragment extends Fragment  {
         ArrayAdapter<String> newAdapter = new ArrayAdapter<String>(
                         inflater.getContext(),
                         R.layout.livro_list_item_1,
-                        listaDeLivros.NomesNovoTestamento());
-        ListView newTestamentList = (ListView) v.findViewById(R.id.newTestamentList);
+                        listaDeLivros.NomesNovoTestamentoHorizontal());
+        GridView newTestamentList = (GridView) v.findViewById(R.id.newTestamentGrid);
         newTestamentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 onListItemClick(parent, view, position, id);
