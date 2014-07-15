@@ -1,5 +1,6 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
+import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 
 import android.app.Activity;
@@ -9,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class VersiculosFragment extends ListFragment {
 	private ListaDeVersiculos listaDeVersiculos;
@@ -46,15 +50,40 @@ public class VersiculosFragment extends ListFragment {
 		
 		/** Creating an array adapter to store the list of countries **/
 		
-        ArrayAdapter<String> adapter = 
+        /*ArrayAdapter<String> adapter =
         		new ArrayAdapter<String>(
         				inflater.getContext(), 
         				android.R.layout.simple_list_item_1,
         				listaDeVersiculos.PorCapitulo(
         						getArguments().getString(ARG_BOOK),
         						getArguments().getInt(ARG_CHAPTER))
-        				);
-        
+        				);*/
+        final int capitulo = getArguments().getInt(ARG_CHAPTER);
+        final String livro = getArguments().getString(ARG_BOOK);
+        final ArrayList<String> versiculos = listaDeVersiculos.PorCapitulo(livro, capitulo);
+
+        ArrayAdapter adapter = new ArrayAdapter(inflater.getContext(),
+                                                R.layout.versiculo_item,
+                                                R.id.versiculoText,
+                                                versiculos
+                                                ) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+
+                TextView versiculoText = (TextView) view.findViewById(R.id.versiculoText);
+                versiculoText.setText(versiculos.get(position));
+
+                //if(convertView == null && versiculoText.getText().toString().startsWith("1  ")) {
+                if(convertView == null && position == 0) {
+                    TextView capituloText = (TextView) view.findViewById(R.id.capituloText);
+                    capituloText.setText(String.valueOf(capitulo));
+                }
+
+                return view;
+            }
+        };
+
         /** Setting the list adapter for the ListFragment */
         setListAdapter(adapter);
         

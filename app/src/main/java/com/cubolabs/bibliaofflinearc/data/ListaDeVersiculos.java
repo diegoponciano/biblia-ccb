@@ -46,7 +46,7 @@ public class ListaDeVersiculos {
 		
         for (int i = 0; i < versiculos.size(); ++i) {
         	String numeroVersiculo = Short.toString(versiculos.get(i).getVersiculo());
-        	String versiculoInteiro = numeroVersiculo + ". " + versiculos.get(i).getTexto();
+        	String versiculoInteiro = numeroVersiculo + "  " + versiculos.get(i).getTexto();
         	
         	listaDeNomes.add(versiculoInteiro);
         }
