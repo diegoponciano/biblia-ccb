@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
 
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeLivros;
@@ -38,15 +36,13 @@ public class CapitulosFragment extends Fragment {
 		ActionBar actionBar = 
 				((ActionBarActivity) getActivity()).getSupportActionBar();
 		actionBar.setTitle(getArguments().getString(ARG_BOOK));
-		
-		/** Creating an array adapter to store the list of countries **/
+
         ArrayAdapter<Integer> adapter = 
         		new ArrayAdapter<Integer>(
         				inflater.getContext(), 
         				R.layout.capitulo_item,
         				listaDeLivros.Capitulos(getArguments().getString(ARG_BOOK))
         				);
-        //ListView newTestamentList = (ListView) v.findViewById(R.id.newTestamentList);
 
         View v = inflater.inflate(R.layout.capitulos_grid, container, false);
 

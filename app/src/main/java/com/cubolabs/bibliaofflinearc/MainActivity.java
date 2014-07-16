@@ -1,5 +1,6 @@
 package com.cubolabs.bibliaofflinearc;
 
+import com.cubolabs.bibliaofflinearc.data.BibliaDatabase;
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
 import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
@@ -23,6 +24,9 @@ public class MainActivity extends ActionBarActivity {
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private BibliaDatabase db;
+    private DaoMaster daoMaster;
+    private DaoSession daoSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,10 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         
 	 	try {
+            db = BibliaDatabase.getInstance(this);
+            daoMaster = new DaoMaster(db.getReadableDatabase());
+            daoSession = daoMaster.newSession();
+
             mTitle = getTitle();
 
             // TODO: restore navigationDrawer
@@ -71,6 +79,11 @@ public class MainActivity extends ActionBarActivity {
             }
         });*/
 	 	
+    }
+
+    @Override
+    protected void onDestroy() {
+        db.close();
     }
 
     // TODO: restore navigationDrawer
