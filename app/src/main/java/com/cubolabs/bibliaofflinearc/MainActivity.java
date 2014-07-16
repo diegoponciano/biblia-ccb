@@ -11,8 +11,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends ActionBarActivity {
+        // TODO: restore navigationDrawer
+        //implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -29,14 +30,15 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
         
 	 	try {
-	        mNavigationDrawerFragment = (NavigationDrawerFragment)
-	                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-	        mTitle = getTitle();
-	        
+            mTitle = getTitle();
+
+            // TODO: restore navigationDrawer
+            //mNavigationDrawerFragment = (NavigationDrawerFragment)
+	        //       getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+
 	        // Set up the drawer.
-	        mNavigationDrawerFragment.setUp(
-	                R.id.navigation_drawer,
-	                (DrawerLayout) findViewById(R.id.drawer_layout));
+	        //mNavigationDrawerFragment.setUp(
+	        //        R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 	        
 	        ActionBar actionBar = getSupportActionBar();
 			actionBar.setTitle(R.string.app_title);
@@ -70,8 +72,9 @@ public class MainActivity extends ActionBarActivity
         });*/
 	 	
     }
-    
-    @Override
+
+    // TODO: restore navigationDrawer
+    //@Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         //FragmentManager fragmentManager = getSupportFragmentManager();
