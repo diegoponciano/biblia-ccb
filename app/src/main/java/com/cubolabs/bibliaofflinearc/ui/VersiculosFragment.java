@@ -42,6 +42,10 @@ public class VersiculosFragment extends ListFragment {
         final String livro = getArguments().getString(ARG_BOOK);
         final ArrayList<String> versiculos = listaDeVersiculos.PorCapitulo(livro, capitulo);
 
+        ActionBar actionBar =
+                ((ActionBarActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle(livro + ", " + String.valueOf(capitulo));
+
         ArrayAdapter adapter = new ArrayAdapter(inflater.getContext(),
                                                 R.layout.versiculo_item,
                                                 R.id.versiculoText,
