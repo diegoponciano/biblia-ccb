@@ -46,34 +46,11 @@ public class VersiculosFragment extends ListFragment {
                 ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(livro + ", " + String.valueOf(capitulo));
 
-        ArrayAdapter adapter = new ArrayAdapter(inflater.getContext(),
-                                                R.layout.versiculo_item,
-                                                R.id.versiculoText,
-                                                versiculos
-                                                ) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-
-                TextView capituloText = (TextView) view.findViewById(R.id.capituloText);
-                TextView versiculoText = (TextView) view.findViewById(R.id.versiculoText);
-
-                capituloText.setText("");
-
-                if(position == 0) {
-                    capituloText.setText(String.valueOf(capitulo));
-                    versiculoText.setText("  " + versiculos.get(position));
-                }
-                else
-                    versiculoText.setText(" " + String.valueOf(position+1) + "  " + versiculos.get(position));
-
-                return view;
-            }
-        };
+        ArrayAdapter adapter = new VersiculosAdapter(inflater, versiculos, capitulo);
 
         /** Setting the list adapter for the ListFragment */
         setListAdapter(adapter);
-        
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 	
@@ -84,4 +61,33 @@ public class VersiculosFragment extends ListFragment {
         listaDeVersiculos = new ListaDeVersiculos(activity);
     }
 
+    private static class VersiculosAdapter extends ArrayAdapter {
+        private final ArrayList<String> versiculos;
+        private final int capitulo;
+
+        public VersiculosAdapter(LayoutInflater inflater, ArrayList<String> versiculos, int capitulo) {
+            super(inflater.getContext(), R.layout.versiculo_item, R.id.versiculoText, versiculos);
+            this.versiculos = versiculos;
+            this.capitulo = capitulo;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+
+            TextView capituloText = (TextView) view.findViewById(R.id.capituloText);
+            TextView versiculoText = (TextView) view.findViewById(R.id.versiculoText);
+
+            capituloText.setText("");
+
+            if(position == 0) {
+                capituloText.setText(String.valueOf(capitulo));
+                versiculoText.setText("  " + versiculos.get(position));
+            }
+            else
+                versiculoText.setText(" " + String.valueOf(position+1) + "  " + versiculos.get(position));
+
+            return view;
+        }
+    }
 }
