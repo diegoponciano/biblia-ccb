@@ -3,12 +3,6 @@ package com.cubolabs.bibliaofflinearc.data;
 import android.app.Activity;
 import android.database.Cursor;
 
-import com.cubolabs.bibliaofflinearc.DaoMaster;
-import com.cubolabs.bibliaofflinearc.Livro;
-import com.cubolabs.bibliaofflinearc.LivroDao;
-import com.cubolabs.bibliaofflinearc.PalavraDao;
-import com.cubolabs.bibliaofflinearc.TestamentoDao;
-
 import java.util.ArrayList;
 import java.util.List;
 

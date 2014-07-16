@@ -1,12 +1,13 @@
 package com.cubolabs.bibliaofflinearc;
 
 import com.cubolabs.bibliaofflinearc.data.BibliaDatabase;
+import com.cubolabs.bibliaofflinearc.data.DaoMaster;
+import com.cubolabs.bibliaofflinearc.data.DaoSession;
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
 import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
 
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -84,6 +85,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         db.close();
+        super.onDestroy();
     }
 
     // TODO: restore navigationDrawer
