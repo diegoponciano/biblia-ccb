@@ -1,11 +1,16 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
+import com.cubolabs.bibliaofflinearc.Palavra;
+import com.cubolabs.bibliaofflinearc.PalavraDao;
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,31 +38,6 @@ public class VersiculosFragment extends ListFragment {
     
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		
-		// http://stackoverflow.com/questions/9239933/how-can-i-get-the-list-item-data-i-click-on
-		/*List<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
-
-	    HashMap<String, Object> map = new HashMap<String, Object>();
-	    map.put(ITEMTITLE, getString(R.string.broadcast_street_1_text));
-	    map.put(ITEMDESCR, getString(R.string.broadcast_request_1_text));
-	    dataList.add(map);
-
-	    map = new HashMap<String, Object>();
-	    map.put(ITEMTITLE, getString(R.string.broascast_street_2_text)); 
-	    map.put(ITEMDESCR, getString(R.string.broadcast_request_2_text));
-	    dataList.add(map);*/
-
-		
-		/** Creating an array adapter to store the list of countries **/
-		
-        /*ArrayAdapter<String> adapter =
-        		new ArrayAdapter<String>(
-        				inflater.getContext(), 
-        				android.R.layout.simple_list_item_1,
-        				listaDeVersiculos.PorCapitulo(
-        						getArguments().getString(ARG_BOOK),
-        						getArguments().getInt(ARG_CHAPTER))
-        				);*/
         final int capitulo = getArguments().getInt(ARG_CHAPTER);
         final String livro = getArguments().getString(ARG_BOOK);
         final ArrayList<String> versiculos = listaDeVersiculos.PorCapitulo(livro, capitulo);
@@ -71,14 +51,17 @@ public class VersiculosFragment extends ListFragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
 
+                TextView capituloText = (TextView) view.findViewById(R.id.capituloText);
                 TextView versiculoText = (TextView) view.findViewById(R.id.versiculoText);
-                versiculoText.setText(versiculos.get(position));
 
-                //if(convertView == null && versiculoText.getText().toString().startsWith("1  ")) {
-                if(convertView == null && position == 0) {
-                    TextView capituloText = (TextView) view.findViewById(R.id.capituloText);
+                capituloText.setText("");
+
+                if(position == 0) {
                     capituloText.setText(String.valueOf(capitulo));
+                    versiculoText.setText("  " + versiculos.get(position));
                 }
+                else
+                    versiculoText.setText(" " + String.valueOf(position+1) + "  " + versiculos.get(position));
 
                 return view;
             }
