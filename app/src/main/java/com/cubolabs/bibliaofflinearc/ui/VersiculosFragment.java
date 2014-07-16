@@ -1,22 +1,17 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
-import com.cubolabs.bibliaofflinearc.Palavra;
-import com.cubolabs.bibliaofflinearc.PalavraDao;
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -68,34 +63,4 @@ public class VersiculosFragment extends ListFragment {
         listaDeVersiculos = new ListaDeVersiculos(activity);
     }
 
-    private static class VersiculosAdapter extends ArrayAdapter {
-        private final ArrayList<String> versiculos;
-        private final int capitulo;
-
-        public VersiculosAdapter(LayoutInflater inflater, ArrayList<String> versiculos, int capitulo) {
-            super(inflater.getContext(), R.layout.versiculo_item, R.id.versiculoText, versiculos);
-            this.versiculos = versiculos;
-            this.capitulo = capitulo;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = super.getView(position, convertView, parent);
-
-            TextView capituloText = (TextView) view.findViewById(R.id.capituloText);
-            TextView versiculoText = (TextView) view.findViewById(R.id.versiculoText);
-
-            capituloText.setText("");
-
-            if(position == 0) {
-                capituloText.setText(String.valueOf(capitulo));
-                versiculoText.setText("  " + versiculos.get(position));
-            }
-            else {
-                versiculoText.setText(Html.fromHtml(" <strong>" + String.valueOf(position + 1) + "</strong>  " + versiculos.get(position)));
-            }
-
-            return view;
-        }
-    }
 }
