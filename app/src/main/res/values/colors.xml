@@ -22,5 +22,6 @@
     <color name="filelist_icon_backgorund">#DDDDDD</color>
     <color name="owncloud_blue_bright">#00ddff</color>
     <color name="background_color">#F7F7F7</color>
+    <drawable name="transparent_color">#00000000</drawable>
 
 </resources>

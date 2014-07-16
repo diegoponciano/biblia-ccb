@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,12 @@ public class VersiculosFragment extends ListFragment {
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    @Override
+    public void onActivityCreated (Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getListView().setDivider(this.getResources().getDrawable(R.drawable.transparent_color));
+    }
 	
 	@Override
     public void onAttach(Activity activity) {
@@ -84,8 +91,9 @@ public class VersiculosFragment extends ListFragment {
                 capituloText.setText(String.valueOf(capitulo));
                 versiculoText.setText("  " + versiculos.get(position));
             }
-            else
-                versiculoText.setText(" " + String.valueOf(position+1) + "  " + versiculos.get(position));
+            else {
+                versiculoText.setText(Html.fromHtml(" <strong>" + String.valueOf(position + 1) + "</strong>  " + versiculos.get(position)));
+            }
 
             return view;
         }
