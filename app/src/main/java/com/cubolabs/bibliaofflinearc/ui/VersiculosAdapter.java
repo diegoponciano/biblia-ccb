@@ -18,12 +18,15 @@ import com.cubolabs.bibliaofflinearc.R;
 import java.util.ArrayList;
 
 
-public class VersiculosAdapter extends ArrayAdapter {
+public class VersiculosAdapter extends ArrayAdapter<String> {
     private final ArrayList<String> versiculos;
     private final int capitulo;
 
     public VersiculosAdapter(LayoutInflater inflater, ArrayList<String> versiculos, int capitulo) {
-        super(inflater.getContext(), R.layout.versiculo_item, R.id.versiculoText, versiculos);
+        super(inflater.getContext(),
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1,
+                versiculos);
         this.versiculos = versiculos;
         this.capitulo = capitulo;
     }
@@ -32,12 +35,9 @@ public class VersiculosAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
 
-        TextView capituloText = (TextView) view.findViewById(R.id.capituloText);
-        TextView versiculoText = (TextView) view.findViewById(R.id.versiculoText);
+        TextView versiculoText = (TextView) view.findViewById(android.R.id.text1);
 
-        capituloText.setText("");
-
-        String versiculoCompleto, indice;
+        String indice;
         SpannableString spanText;
         Object indiceStyle;
 
@@ -49,10 +49,11 @@ public class VersiculosAdapter extends ArrayAdapter {
             indice = String.valueOf(position + 1);
             indiceStyle = new StyleSpan(Typeface.BOLD);
         }
-        versiculoCompleto = " "+indice+"  "+versiculos.get(position);
-        spanText = new SpannableString(versiculoCompleto);
+
+        spanText = new SpannableString(" "+indice+"  "+versiculos.get(position));
         spanText.setSpan(indiceStyle, 1, 1+indice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         versiculoText.setText(spanText, TextView.BufferType.SPANNABLE);
+        versiculoText.setPadding(8, 0, 2, 4);
 
         return view;
     }
