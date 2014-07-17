@@ -24,9 +24,6 @@ public class MainActivity extends ActionBarActivity {
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private BibliaDatabase db;
-    private DaoMaster daoMaster;
-    private DaoSession daoSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +31,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         
 	 	try {
-            db = BibliaDatabase.getInstance(this);
-            daoMaster = new DaoMaster(db.getReadableDatabase());
-            daoSession = daoMaster.newSession();
 
             mTitle = getTitle();
 
@@ -79,11 +73,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });*/
 	 	
-    }
-
-    @Override
-    protected void onDestroy() {
-        db.close();
     }
 
     // TODO: restore navigationDrawer
