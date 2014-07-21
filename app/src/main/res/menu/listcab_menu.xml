@@ -3,19 +3,14 @@
       xmlns:app="http://schemas.android.com/apk/res-auto" >
     <item
         android:id="@+id/menu_item_share"
-        android:title="Share"
+        android:title="@string/share"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_action_share"
-        app:actionProviderClass=
-            "android.support.v7.widget.ShareActionProvider" />
+        android:icon="@drawable/ic_action_share"/>
     <item
-        android:id="@+id/edit_entry"
-        android:title="E!"/>
-    <item
-        android:id="@+id/delete_entry"
-        android:title="D!"/>
-    <item
-        android:id="@+id/finish_it"
-        android:title="G!"/>
-
+        android:id="@+id/menu_item_copy"
+        android:title="@string/copy"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_copy"/>
+    <!--@android:drawable/ic_menu_share-->
+    <!--android:icon="@drawable/ic_action_share-->
 </menu>

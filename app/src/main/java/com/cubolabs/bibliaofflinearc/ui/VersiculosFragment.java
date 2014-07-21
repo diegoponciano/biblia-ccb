@@ -1,10 +1,15 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
+import com.cubolabs.bibliaofflinearc.MainActivity;
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,8 +18,10 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.SparseBooleanArray;
 import android.support.v7.view.ActionMode;
+import android.text.Html;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,9 +36,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static android.support.v4.view.MenuItemCompat.*;
-
 public class VersiculosFragment extends ListFragment {
+    private static final String TAG = VersiculosFragment.class.getSimpleName();
 	private ListaDeVersiculos listaDeVersiculos;
 	private static final String ARG_BOOK = "livro";
 	private static final String ARG_CHAPTER = "capitulo";
@@ -49,6 +55,12 @@ public class VersiculosFragment extends ListFragment {
 	
     public VersiculosFragment() {
     }
+
+    private String currentChapter(){
+        final int capitulo = getArguments().getInt(ARG_CHAPTER);
+        final String livro = getArguments().getString(ARG_BOOK);
+        return livro + ", " + String.valueOf(capitulo);
+    }
     
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,146 +70,57 @@ public class VersiculosFragment extends ListFragment {
 
         ActionBar actionBar =
                 ((ActionBarActivity) getActivity()).getSupportActionBar();
-        actionBar.setTitle(livro + ", " + String.valueOf(capitulo));
+        actionBar.setTitle(this.currentChapter());
 
         ArrayAdapter adapter = new VersiculosAdapter(inflater, versiculos, capitulo);
-
-        /** Setting the list adapter for the ListFragment */
         setListAdapter(adapter);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    //@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate menu resource file.
-        getActivity().getMenuInflater().inflate(R.menu.listcab_menu, menu);
-
-        // Locate MenuItem with ShareActionProvider
-        MenuItem item = menu.findItem(R.id.menu_item_share);
-
-        // Fetch and store ShareActionProvider
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-
-        // Return true to display menu
-        return true;
-    }
-
-    // Call to update the share intent
-    private void setShareIntent(Intent shareIntent) {
-        if (mShareActionProvider != null) {
-            mShareActionProvider.setShareIntent(shareIntent);
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        // Notice how the ListView api is lame
+        // You can use mListView.getCheckedItemIds() if the adapter
+        // has stable ids, e.g you're using a CursorAdaptor
+        SparseBooleanArray checked = getListView().getCheckedItemPositions();
+        boolean hasCheckedElement = false;
+        for (int i = 0 ; i < checked.size() && ! hasCheckedElement ; i++) {
+            hasCheckedElement = checked.valueAt(i);
         }
-    }
+
+        if(l.isItemChecked(position)) {
+            l.setItemChecked(position, false);
+            getListView().setItemChecked(position, true);
+        }
+        else {
+            l.setItemChecked(position, true);
+            getListView().setItemChecked(position, false);
+        }
+
+        int nr = checked.size();
+        if (actionMode != null)
+            actionMode.setTitle(nr + (nr == 1 ? " versículo!" : " versículos!"));
+
+        if (hasCheckedElement) {
+            if (actionMode == null) {
+                actionMode = ((ActionBarActivity) getActivity())
+                        .startSupportActionMode(new ContextualActionBar());
+            }
+        } else {
+            if (actionMode != null) {
+                actionMode.finish();
+            }
+        }
+    };
 
     @SuppressLint("NewApi")
     @Override
     public void onActivityCreated (Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getListView().setDivider(this.getResources().getDrawable(R.drawable.transparent_color));
-        //getListView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-            getListView().setMultiChoiceModeListener(new ListView.MultiChoiceModeListener() {
-
-                private int nr = 0;
-                private ShareActionProvider mShareActionProvider;
-
-                private void setShareIntent(Intent shareIntent) {
-                    if (mShareActionProvider != null) {
-                        mShareActionProvider.setShareIntent(shareIntent);
-                    }
-                }
-
-                @Override
-                public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
-                    getActivity().getMenuInflater().inflate(R.menu.listcab_menu,
-                            menu);
-                    return true;
-                }
-
-                @Override
-                public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
-                    return false;
-                }
-
-                @SuppressLint("NewApi")
-                @Override
-                public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem item) {
-                    switch (item.getItemId()) {
-                        /*case R.id.item1:
-                            Toast.makeText(getActivity(), "Option1 clicked",
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.item2:
-                            Toast.makeText(getActivity(), "Option2 clicked",
-                                    Toast.LENGTH_SHORT).show();
-                            break;*/
-                        case R.id.menu_item_share:
-                            Toast.makeText(getActivity(), "SHAREZ IT!",
-                                    Toast.LENGTH_SHORT).show();
-                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                            sharingIntent.setType("text/plain");
-                            String shareBody = "Here is the share content body";
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                            startActivity(Intent.createChooser(sharingIntent, "Share via"));
-                            break;
-                        case R.id.edit_entry:
-                            Toast.makeText(getActivity(), "Edit entry!",
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.delete_entry:
-                            Toast.makeText(getActivity(), "Delete entry!",
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.finish_it:
-                            nr = 0;
-                            Toast.makeText(getActivity(), "Finish the CAB!",
-                                    Toast.LENGTH_SHORT).show();
-                            mode.finish();
-
-                    }
-                    return false;
-                }
-
-                @Override
-                public void onDestroyActionMode(android.view.ActionMode mode) {
-                    nr = 0;
-                }
-
-                @SuppressLint("NewApi")
-                @Override
-                public void onItemCheckedStateChanged(android.view.ActionMode mode,
-                                                      int position, long id, boolean checked) {
-                    if (checked) {
-                        nr++;
-                    } else {
-                        nr--;
-                    }
-                    mode.setTitle(nr + " rows!");
-                }
-
-            });
-            getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                    if(getListView().getCheckedItemCount() == 0){
-                        actionMode.finish();
-                        return;
-                    }
-
-                    if(actionMode == null){
-                        actionMode = ((ActionBarActivity)getActivity()).startSupportActionMode(new ContextualActionBar());
-                    }
-
-                }
-            });
-        }
-        else {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            registerForContextMenu(getListView());
-        }
+        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
 	
 	@Override
@@ -207,35 +130,78 @@ public class VersiculosFragment extends ListFragment {
         listaDeVersiculos = new ListaDeVersiculos(activity);
     }
 
-    private class ContextualActionBar implements ActionMode.Callback{
+    private class ContextualActionBar implements ActionMode.Callback {
         private ShareActionProvider mShareActionProvider;
+        private int nr = 0;
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch(item.getItemId()){
+            StringBuilder versesToShare = new StringBuilder();
+            StringBuilder versesToShareHtml = new StringBuilder();
+            int len = getListView().getCount();
+            SparseBooleanArray checked = getListView().getCheckedItemPositions();
+            for (int i = 0; i < len; i++){
+                if (checked.get(i)) {
+                    versesToShare.append(String.valueOf(i+1) + ". ");
+                    versesToShare.append(getListAdapter().getItem(i).toString());
+                    versesToShare.append("\n");
 
-                case R.id.menu_item_share :
-                    mode.finish();
-                    return true;
-
-                default :
-                    return false;
+                    versesToShareHtml.append("<b>"+String.valueOf(i+1) + ". </b>");
+                    versesToShareHtml.append(getListAdapter().getItem(i).toString());
+                    versesToShareHtml.append("\n");
+                }
             }
+            switch (item.getItemId()) {
+                case R.id.menu_item_share:
+                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                    sharingIntent.setType("text/html");
+                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, currentChapter());
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, versesToShare.toString());
+                    sharingIntent.putExtra(Intent.EXTRA_HTML_TEXT,
+                            Html.fromHtml(versesToShareHtml.toString())
+                    );
+                    startActivity(Intent.createChooser(sharingIntent, "Enviar via"));
+                    break;
+                case R.id.menu_item_copy:
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ) {
+                        final android.text.ClipboardManager clipboard =
+                                (android.text.ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
+                        clipboard.setText(versesToShare.toString());
+                    }
+                    else {
+                        ClipboardManager clipboard = (ClipboardManager)
+                                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newHtmlText("Verses clipboard",
+                                versesToShare.toString(),
+                                versesToShareHtml.toString());
+                        clipboard.setPrimaryClip(clip);
+                    }
+                    Toast.makeText(getActivity(),
+                            "Copiado com sucesso!",
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Log.d(TAG, "onActionItemClicked: Unknown Menu Item Received!");
+                    mode.finish();
+                    break;
+            }
+            return false;
         }
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.listcab_menu, menu);
+            getActivity().getMenuInflater()
+                    .inflate(R.menu.listcab_menu, menu);
+            return true;
 
             //Initialize the ShareActionProvider
-            MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
+            /*MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
             mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareMenuItem);
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT, "test message");
             mShareActionProvider.setShareIntent(shareIntent);
-            return true;
+            return true;*/
         }
 
         @Override
@@ -249,14 +215,13 @@ public class VersiculosFragment extends ListFragment {
             for(int i=0;i<selectedItems.size();i++){
                 getListView().setItemChecked(selectedItems.keyAt(i), false);
             }
+            nr = 0;
         }
 
         @Override
-        public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
+        public boolean onPrepareActionMode(ActionMode mode, Menu arg1) {
             // TODO Auto-generated method stub
             return false;
         }
-
     }
-
 }

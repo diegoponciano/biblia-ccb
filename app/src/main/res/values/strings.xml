@@ -11,4 +11,6 @@
     <string name="action_settings">Settings</string>
     <string name="oldTestament">Velho Testamento</string>
     <string name="newTestament">Novo Testamento</string>
+    <string name="share">Enviar</string>
+    <string name="copy">Copiar</string>
 </resources>
