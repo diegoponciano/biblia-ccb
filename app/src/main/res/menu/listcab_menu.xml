@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <item
+        android:id="@+id/menu_item_share"
+        android:title="Share"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_share"
+        app:actionProviderClass=
+            "android.support.v7.widget.ShareActionProvider" />
     <item
         android:id="@+id/edit_entry"
-        android:title="Edit!"/>
+        android:title="E!"/>
     <item
         android:id="@+id/delete_entry"
-        android:title="Delete!"/>
+        android:title="D!"/>
     <item
         android:id="@+id/finish_it"
-        android:title="Get me out!"/>
+        android:title="G!"/>
 
 </menu>
