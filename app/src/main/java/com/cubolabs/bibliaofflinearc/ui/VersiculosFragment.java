@@ -151,6 +151,23 @@ public class VersiculosFragment extends ListFragment {
         listaDeVersiculos = new ListaDeVersiculos(activity);
     }
 
+    private void copyToClipboard(String extraText, String extraHtmlText) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ) {
+            final android.text.ClipboardManager clipboard =
+                    (android.text.ClipboardManager)
+                            getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
+            clipboard.setText(extraText);
+        }
+        else {
+            ClipboardManager clipboard = (ClipboardManager)
+                    getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newHtmlText("Verses clipboard",
+                    extraText,
+                    extraHtmlText);
+            clipboard.setPrimaryClip(clip);
+        }
+    }
+
     private class ContextualActionBar implements ActionMode.Callback {
         private int nr = 0;
 
@@ -162,40 +179,28 @@ public class VersiculosFragment extends ListFragment {
             SparseBooleanArray checked = getListView().getCheckedItemPositions();
             for (int i = 0; i < len; i++){
                 if (checked.get(i)) {
-                    versesToShare.append(String.valueOf(i+1) + ". ");
+                    versesToShare.append(" " + String.valueOf(i+1) + ". ");
                     versesToShare.append(getListAdapter().getItem(i).toString());
                     versesToShare.append("\n");
 
                     versesToShareHtml.append("<b>"+String.valueOf(i+1) + ". </b>");
                     versesToShareHtml.append(getListAdapter().getItem(i).toString());
-                    versesToShareHtml.append("\n");
+                    versesToShareHtml.append("<br>");
                 }
             }
             switch (item.getItemId()) {
                 case R.id.menu_item_share:
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                    sharingIntent.setType("text/html");
+                    sharingIntent.setType("text/plain");
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, currentChapter());
-                    sharingIntent.putExtra(Intent.EXTRA_TEXT, versesToShare.toString());
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "\n"+versesToShare.toString());
                     sharingIntent.putExtra(Intent.EXTRA_HTML_TEXT,
                             Html.fromHtml(versesToShareHtml.toString())
                     );
                     startActivity(Intent.createChooser(sharingIntent, "Enviar via"));
                     break;
                 case R.id.menu_item_copy:
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ) {
-                        final android.text.ClipboardManager clipboard =
-                                (android.text.ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
-                        clipboard.setText(versesToShare.toString());
-                    }
-                    else {
-                        ClipboardManager clipboard = (ClipboardManager)
-                                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newHtmlText("Verses clipboard",
-                                versesToShare.toString(),
-                                versesToShareHtml.toString());
-                        clipboard.setPrimaryClip(clip);
-                    }
+                    copyToClipboard(versesToShare.toString(), versesToShareHtml.toString());
                     Toast.makeText(getActivity(),
                             "Copiado com sucesso!",
                             Toast.LENGTH_SHORT).show();
