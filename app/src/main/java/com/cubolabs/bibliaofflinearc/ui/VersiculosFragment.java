@@ -78,25 +78,40 @@ public class VersiculosFragment extends ListFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    @Override
+    /*@Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        // Notice how the ListView api is lame
-        // You can use mListView.getCheckedItemIds() if the adapter
-        // has stable ids, e.g you're using a CursorAdaptor
-        SparseBooleanArray checked = getListView().getCheckedItemPositions();
-        boolean hasCheckedElement = false;
-        for (int i = 0 ; i < checked.size() && ! hasCheckedElement ; i++) {
-            hasCheckedElement = checked.valueAt(i);
-        }
-
         if(l.isItemChecked(position)) {
             l.setItemChecked(position, false);
-            getListView().setItemChecked(position, true);
+            getListView().setItemChecked(position, false);
         }
         else {
             l.setItemChecked(position, true);
             getListView().setItemChecked(position, false);
+        }
+    }*/
+
+    private boolean listItemLongClick(ListView listView, View v, int position, long id) {
+        // Notice how the ListView api is lame
+        // You can use mListView.getCheckedItemIds() if the adapter
+        // has stable ids, e.g you're using a CursorAdaptor
+
+
+        if(listView.isItemChecked(position)) {
+            listView.setItemChecked(position, false);
+        }
+        else {
+            listView.setItemChecked(position, true);
+        }
+
+        long[] allIds = listView.getCheckedItemIds();
+
+        SparseBooleanArray checked = listView.getCheckedItemPositions();
+        Log.d("Checked size long click", String.valueOf(checked.size()));
+
+        boolean hasCheckedElement = false;
+        for (int i = 0 ; i < checked.size() && ! hasCheckedElement ; i++) {
+            hasCheckedElement = checked.valueAt(i);
         }
 
         int nr = checked.size();
@@ -113,6 +128,7 @@ public class VersiculosFragment extends ListFragment {
                 actionMode.finish();
             }
         }
+        return true;
     };
 
     @SuppressLint("NewApi")
@@ -121,6 +137,26 @@ public class VersiculosFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         getListView().setDivider(this.getResources().getDrawable(R.drawable.transparent_color));
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        //getListView().setClickable(false);
+        getListView().setLongClickable(true);
+
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SparseBooleanArray checked = getListView().getCheckedItemPositions();
+                Log.d("Checked size click", String.valueOf(checked.size()));
+
+                if (getListView().getCheckedItemPositions().size() <= 1 ||
+                        !getListView().isItemChecked(position))
+                    getListView().setItemChecked(position, false);
+            }
+        });
+        getListView().setOnItemLongClickListener(new ListView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                return listItemLongClick(getListView(), view, i, l);
+            }
+        });
+        getListView().setItemsCanFocus(false);
     }
 	
 	@Override
@@ -131,7 +167,6 @@ public class VersiculosFragment extends ListFragment {
     }
 
     private class ContextualActionBar implements ActionMode.Callback {
-        private ShareActionProvider mShareActionProvider;
         private int nr = 0;
 
         @Override
