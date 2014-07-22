@@ -23,8 +23,8 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
     private final int capitulo;
     private final Context context;
 
-    public VersiculosAdapter(LayoutInflater inflater, ArrayList<String> versiculos, int capitulo) {
-        super(inflater.getContext(),
+    public VersiculosAdapter(Context context, ArrayList<String> versiculos, int capitulo) {
+        super(context,
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
                 android.R.layout.simple_list_item_activated_1 :
                 R.layout.versiculo_checked), //android.R.layout.simple_list_item_checked
@@ -32,7 +32,7 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
                 versiculos);
         this.versiculos = versiculos;
         this.capitulo = capitulo;
-        this.context = inflater.getContext();
+        this.context = context;
     }
 
     @Override

@@ -1,11 +1,9 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
-import com.cubolabs.bibliaofflinearc.MainActivity;
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -14,21 +12,17 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.view.ActionMode;
 import android.text.Html;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -41,7 +35,6 @@ public class VersiculosFragment extends ListFragment {
 	private ListaDeVersiculos listaDeVersiculos;
 	private static final String ARG_BOOK = "livro";
 	private static final String ARG_CHAPTER = "capitulo";
-    private ShareActionProvider mShareActionProvider;
     private ActionMode actionMode;
 
 	public static VersiculosFragment newInstance(String livro, Integer capitulo) {
@@ -64,99 +57,91 @@ public class VersiculosFragment extends ListFragment {
     
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final int capitulo = getArguments().getInt(ARG_CHAPTER);
-        final String livro = getArguments().getString(ARG_BOOK);
-        final ArrayList<String> versiculos = listaDeVersiculos.PorCapitulo(livro, capitulo);
-
         ActionBar actionBar =
                 ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(this.currentChapter());
 
-        ArrayAdapter adapter = new VersiculosAdapter(inflater, versiculos, capitulo);
-        setListAdapter(adapter);
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    /*@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if(l.isItemChecked(position)) {
-            l.setItemChecked(position, false);
-            getListView().setItemChecked(position, false);
+    @SuppressLint("NewApi")
+    private int checkedItemsCount(ListView listview) {
+        if (Build.VERSION.SDK_INT >= 11) {
+            return listview.getCheckedItemCount();
         }
         else {
-            l.setItemChecked(position, true);
-            getListView().setItemChecked(position, false);
+            int checkedCount = 0;
+            for (int i = 0 ; i < listview.getCheckedItemPositions().size(); i++) {
+                if(listview.getCheckedItemPositions().valueAt(i))
+                    checkedCount++;
+            }
+            return checkedCount;
         }
-    }*/
+    }
 
-    private boolean listItemLongClick(ListView listView, View v, int position, long id) {
-        // Notice how the ListView api is lame
-        // You can use mListView.getCheckedItemIds() if the adapter
-        // has stable ids, e.g you're using a CursorAdaptor
-
-
-        if(listView.isItemChecked(position)) {
-            listView.setItemChecked(position, false);
-        }
-        else {
-            listView.setItemChecked(position, true);
-        }
-
-        long[] allIds = listView.getCheckedItemIds();
-
-        SparseBooleanArray checked = listView.getCheckedItemPositions();
-        Log.d("Checked size long click", String.valueOf(checked.size()));
-
-        boolean hasCheckedElement = false;
-        for (int i = 0 ; i < checked.size() && ! hasCheckedElement ; i++) {
-            hasCheckedElement = checked.valueAt(i);
-        }
-
-        int nr = checked.size();
+    private void actionBarVersesCount(ListView lv) {
+        int nr = checkedItemsCount(lv);
         if (actionMode != null)
             actionMode.setTitle(nr + (nr == 1 ? " versículo!" : " versículos!"));
+    }
 
-        if (hasCheckedElement) {
-            if (actionMode == null) {
-                actionMode = ((ActionBarActivity) getActivity())
-                        .startSupportActionMode(new ContextualActionBar());
-            }
-        } else {
+    private void listItemAfterClick(ListView lv, ArrayAdapter adapter) {
+        if (checkedItemsCount(lv) == 0) {
             if (actionMode != null) {
                 actionMode.finish();
             }
         }
-        return true;
+
+        actionBarVersesCount(lv);
+        adapter.notifyDataSetChanged();
     };
 
     @SuppressLint("NewApi")
     @Override
-    public void onActivityCreated (Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getListView().setDivider(this.getResources().getDrawable(R.drawable.transparent_color));
-        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        //getListView().setClickable(false);
-        getListView().setLongClickable(true);
 
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SparseBooleanArray checked = getListView().getCheckedItemPositions();
-                Log.d("Checked size click", String.valueOf(checked.size()));
+        final int capitulo = getArguments().getInt(ARG_CHAPTER);
+        final String livro = getArguments().getString(ARG_BOOK);
+        final ArrayList<String> versiculos = listaDeVersiculos.PorCapitulo(livro, capitulo);
 
-                if (getListView().getCheckedItemPositions().size() <= 1 ||
-                        !getListView().isItemChecked(position))
-                    getListView().setItemChecked(position, false);
+        final ArrayAdapter adapter = new VersiculosAdapter(getActivity(), versiculos, capitulo);
+        setListAdapter(adapter);
+
+        final ListView lv = getListView();
+
+        lv.setDivider(this.getResources().getDrawable(R.drawable.transparent_color));
+        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                if (checkedItemsCount(lv) <= 1 || !lv.isItemChecked(position)) {
+                    lv.setItemChecked(position, false);
+                }
+
+                listItemAfterClick(lv, adapter);
             }
         });
-        getListView().setOnItemLongClickListener(new ListView.OnItemLongClickListener() {
+        lv.setOnItemLongClickListener(new ListView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                return listItemLongClick(getListView(), view, i, l);
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                if(lv.isItemChecked(position)) {
+                    lv.setItemChecked(position, false);
+                }
+                else {
+                    lv.setItemChecked(position, true);
+                }
+
+                if (checkedItemsCount(lv) > 0) {
+                    if (actionMode == null) {
+                        actionMode = ((ActionBarActivity) getActivity())
+                                .startSupportActionMode(new ContextualActionBar());
+                    }
+                }
+                listItemAfterClick(lv, adapter);
+                return true;
             }
         });
-        getListView().setItemsCanFocus(false);
     }
 	
 	@Override
