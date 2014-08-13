@@ -121,7 +121,7 @@ public class SearchResultsPopup {
         if (listaDeVersiculos == null)
             listaDeVersiculos = new ListaDeVersiculos(activity);
 
-        ArrayList<String> versiculos = listaDeVersiculos.Busca(s);
+        ArrayList<String> versiculos = listaDeVersiculos.Busca(s.trim());
         update(versiculos);
     }
 

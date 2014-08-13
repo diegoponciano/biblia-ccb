@@ -7,15 +7,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.PopupWindow;
 
-import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
 import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
 import com.cubolabs.bibliaofflinearc.ui.SearchResultsPopup;
-
-import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
         // TODO: restore navigationDrawer
