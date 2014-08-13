@@ -42,5 +42,26 @@ public class ListaDeVersiculos {
         
         return listaDeNomes;
 	}
-	
+
+    public ArrayList<String> Busca(String s) {
+        s = "%" + s + "%";
+        QueryBuilder<Palavra> pqb = palavraDao.queryBuilder();
+        List<Palavra> versiculos = pqb.where(PalavraDao.Properties.Texto.like(s))
+                .orderAsc(PalavraDao.Properties.Id_livro)
+                .list();
+
+        final ArrayList<String> listaDeVersos = new ArrayList<String>();
+
+        for (int i = 0; i < versiculos.size(); ++i) {
+            String fullVerse = versiculos.get(i).getTexto() + "::";
+
+            fullVerse += versiculos.get(i).getLivro().getNome();
+            fullVerse += " " + versiculos.get(i).getCapitulo();
+            fullVerse += ":" + versiculos.get(i).getVersiculo();
+
+            listaDeVersos.add(fullVerse);
+        }
+
+        return listaDeVersos;
+    }
 }

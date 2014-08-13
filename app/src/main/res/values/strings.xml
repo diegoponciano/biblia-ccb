@@ -5,12 +5,13 @@
     <string name="title_section1">Bíblia</string>
     <string name="title_section2">Verso do dia</string>
     <string name="title_section3">Section 3</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Abrir menu de navegação</string>
+    <string name="navigation_drawer_close">Fechar menu de navegação</string>
     <string name="action_example">Example action</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Configurações</string>
     <string name="oldTestament">Velho Testamento</string>
     <string name="newTestament">Novo Testamento</string>
     <string name="share">Enviar</string>
     <string name="copy">Copiar</string>
+    <string name="action_search">Procurar</string>
 </resources>

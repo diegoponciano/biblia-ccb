@@ -1,18 +1,34 @@
 package com.cubolabs.bibliaofflinearc;
 
-import com.cubolabs.bibliaofflinearc.data.BibliaDatabase;
+import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
 import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
         // TODO: restore navigationDrawer
         //implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -24,15 +40,19 @@ public class MainActivity extends ActionBarActivity {
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private SearchView mSearchView;
+    private String popUpContents[];
+    private PopupWindow popupSearchResults;
+    private ArrayAdapter<String> searchResultsAdapter;
+    private Menu actionBarMenu;
+    private ListaDeVersiculos listaDeVersiculos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
 	 	try {
-
-            mTitle = getTitle();
+            //mTitle = getTitle();
 
             // TODO: restore navigationDrawer
             //mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -41,13 +61,16 @@ public class MainActivity extends ActionBarActivity {
 	        // Set up the drawer.
 	        //mNavigationDrawerFragment.setUp(
 	        //        R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-	        
+
 	        ActionBar actionBar = getSupportActionBar();
 			actionBar.setTitle(R.string.app_title);
 			
 	        getSupportFragmentManager().beginTransaction()
             .replace(R.id.container, LivrosListFragment.newInstance())
             .commit();
+
+            popUpContents = new String[]{};
+            popupSearchResults = popupSearchResults();
 	 	}
 	 	catch(Exception e) {
 	 		MyMessageBox.ShowDialog(this, "MainActivity.onCreate", e.getMessage());
@@ -73,6 +96,91 @@ public class MainActivity extends ActionBarActivity {
             }
         });*/
 	 	
+    }
+
+    public PopupWindow popupSearchResults() {
+        PopupWindow popupWindow = new PopupWindow(this);
+        ListView listviewSearchResults = new ListView(this) {
+            //TODO: popupwindow 90% parent's width
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+                int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+                this.setMeasuredDimension((int)Math.round(parentWidth*0.9), parentHeight);
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            }
+        };
+        listviewSearchResults.setAdapter(versesAdapter(popUpContents));
+
+        listviewSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
+                Context mContext = v.getContext();
+                MainActivity mainActivity = ((MainActivity) mContext);
+
+                // add some animation when a list item was clicked
+                Animation fadeInAnimation = AnimationUtils.loadAnimation(v.getContext(), android.R.anim.fade_in);
+                fadeInAnimation.setDuration(10);
+                v.startAnimation(fadeInAnimation);
+
+                mainActivity.popupSearchResults.dismiss();
+
+                String selectedItemTag = v.getTag().toString();
+                Toast.makeText(mContext, selectedItemTag, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // some other visual settings
+        popupWindow.setFocusable(false);
+        //popupWindow.setFocusable(true);
+        //popupWindow.setWidth(250);
+
+        popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+
+        // set the list view as pop up window content
+        popupWindow.setContentView(listviewSearchResults);
+        return popupWindow;
+    }
+
+    private ArrayAdapter<String> versesAdapter(String dogsArray[]) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dogsArray) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                // setting the ID and text for every items in the list
+                String item = getItem(position);
+                String[] itemArr = item.split("::");
+                String text = itemArr[0];
+                String id = itemArr[1];
+
+                // visual settings for the list item
+                TextView listItem = new TextView(MainActivity.this);
+
+                listItem.setText(text);
+                listItem.setTag(id);
+                listItem.setTextSize(16);
+                listItem.setPadding(10, 10, 10, 10);
+                listItem.setTextColor(Color.WHITE);
+
+                return listItem;
+            }
+        };
+
+        return adapter;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (popupSearchResults.isShowing())
+            popupSearchResults.dismiss();
+        else {
+            MenuItem searchItem = actionBarMenu.findItem(R.id.action_search);
+            mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            if (!mSearchView.isIconified())
+                mSearchView.setIconified(true);
+            else
+                super.onBackPressed();
+        }
     }
 
     // TODO: restore navigationDrawer
@@ -107,7 +215,6 @@ public class MainActivity extends ActionBarActivity {
         actionBar.setTitle(R.string.app_title);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -118,19 +225,50 @@ public class MainActivity extends ActionBarActivity {
             //restoreActionBar();
         //    return true;
         //}
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        actionBarMenu = menu;
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setOnQueryTextListener(this);
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        if (listaDeVersiculos == null)
+            listaDeVersiculos = new ListaDeVersiculos(this);
+
+        ArrayList<String> versiculos = listaDeVersiculos.Busca(s);
+
+        popUpContents = versiculos.toArray(new String[versiculos.size()]);
+        if (popupSearchResults.isShowing()) {
+            popupSearchResults.dismiss();
+        }
+        popupSearchResults = popupSearchResults();
+
+        popupSearchResults.showAsDropDown(findViewById(R.id.action_search), -5, 0);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        //Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+        return false;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch(item.getItemId()){
+            case R.id.action_search:
+                mSearchView.setIconified(false);
+                return true;
+            case R.id.action_settings:
+                return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
 }
