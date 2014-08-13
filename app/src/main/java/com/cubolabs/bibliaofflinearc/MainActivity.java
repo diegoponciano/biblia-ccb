@@ -129,7 +129,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         mSearchView.setOnQueryTextListener(this);
 
-        searchResultsPopup = new SearchResultsPopup(this, mSearchView);
+        searchResultsPopup = new SearchResultsPopup(this, mSearchView, searchItem);
 
         return true;
     }

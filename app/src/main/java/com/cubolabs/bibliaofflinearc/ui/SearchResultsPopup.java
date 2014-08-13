@@ -2,7 +2,10 @@ package com.cubolabs.bibliaofflinearc.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -26,11 +29,13 @@ public class SearchResultsPopup {
     private String popUpContents[];
     private PopupWindow popupSearchResults;
     private SearchView mSearchView;
+    private MenuItem searchItem;
     private ListaDeVersiculos listaDeVersiculos;
 
-    public SearchResultsPopup(MainActivity activity, SearchView mSearchView){
+    public SearchResultsPopup(MainActivity activity, SearchView mSearchView, MenuItem searchItem){
         this.activity = activity;
         this.mSearchView = mSearchView;
+        this.searchItem = searchItem;
         this.popUpContents = new String[]{};
         this.popupSearchResults = create();
     }
@@ -51,18 +56,35 @@ public class SearchResultsPopup {
 
         listviewSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
-                Context mContext = v.getContext();
-                MainActivity mainActivity = ((MainActivity) mContext);
+                //Context mContext = v.getContext();
+                //MainActivity mainActivity = ((MainActivity) mContext);
 
                 // add some animation when a list item was clicked
                 Animation fadeInAnimation = AnimationUtils.loadAnimation(v.getContext(), android.R.anim.fade_in);
                 fadeInAnimation.setDuration(10);
                 v.startAnimation(fadeInAnimation);
 
-                popupSearchResults.dismiss();
+                while (hide()) {}
 
                 String selectedItemTag = v.getTag().toString();
-                Toast.makeText(mContext, selectedItemTag, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, selectedItemTag, Toast.LENGTH_SHORT).show();
+
+                String[] livroCapituloArr = selectedItemTag.split(" |:");
+                String livro = livroCapituloArr[0];
+                Integer capitulo = Integer.parseInt(livroCapituloArr[1]);
+                //Integer versiculo = Integer.parseInt(livroCapituloArr[2]);
+
+                Fragment newFragment =
+                        VersiculosFragment.newInstance(livro, capitulo);
+                FragmentTransaction transaction =
+                        activity.getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
+
+                transaction.replace(R.id.container, newFragment);
+                transaction.addToBackStack(null);
+
+                transaction.commit();
+
             }
         });
 
@@ -96,7 +118,7 @@ public class SearchResultsPopup {
                 listItem.setText(text);
                 listItem.setTag(id);
                 listItem.setTextSize(16);
-                listItem.setPadding(10, 10, 10, 10);
+                listItem.setPadding(10, 15, 10, 10);
                 listItem.setTextColor(Color.WHITE);
 
                 return listItem;
