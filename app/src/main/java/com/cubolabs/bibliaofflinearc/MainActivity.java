@@ -1,12 +1,5 @@
 package com.cubolabs.bibliaofflinearc;
 
-import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
-import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
-import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
-import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
-
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
@@ -14,17 +7,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
+import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
+import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
+import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
+import com.cubolabs.bibliaofflinearc.ui.SearchResultsPopup;
 
 import java.util.ArrayList;
 
@@ -41,11 +30,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
      */
     private CharSequence mTitle;
     private SearchView mSearchView;
-    private String popUpContents[];
-    private PopupWindow popupSearchResults;
-    private ArrayAdapter<String> searchResultsAdapter;
-    private Menu actionBarMenu;
-    private ListaDeVersiculos listaDeVersiculos;
+    private SearchResultsPopup searchResultsPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +53,6 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
 	        getSupportFragmentManager().beginTransaction()
             .replace(R.id.container, LivrosListFragment.newInstance())
             .commit();
-
-            popUpContents = new String[]{};
-            popupSearchResults = popupSearchResults();
 	 	}
 	 	catch(Exception e) {
 	 		MyMessageBox.ShowDialog(this, "MainActivity.onCreate", e.getMessage());
@@ -95,92 +77,12 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
                   });
             }
         });*/
-	 	
-    }
-
-    public PopupWindow popupSearchResults() {
-        PopupWindow popupWindow = new PopupWindow(this);
-        ListView listviewSearchResults = new ListView(this) {
-            //TODO: popupwindow 90% parent's width
-            @Override
-            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-                int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-                this.setMeasuredDimension((int)Math.round(parentWidth*0.9), parentHeight);
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            }
-        };
-        listviewSearchResults.setAdapter(versesAdapter(popUpContents));
-
-        listviewSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
-                Context mContext = v.getContext();
-                MainActivity mainActivity = ((MainActivity) mContext);
-
-                // add some animation when a list item was clicked
-                Animation fadeInAnimation = AnimationUtils.loadAnimation(v.getContext(), android.R.anim.fade_in);
-                fadeInAnimation.setDuration(10);
-                v.startAnimation(fadeInAnimation);
-
-                mainActivity.popupSearchResults.dismiss();
-
-                String selectedItemTag = v.getTag().toString();
-                Toast.makeText(mContext, selectedItemTag, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // some other visual settings
-        popupWindow.setFocusable(false);
-        //popupWindow.setFocusable(true);
-        //popupWindow.setWidth(250);
-
-        popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-
-        // set the list view as pop up window content
-        popupWindow.setContentView(listviewSearchResults);
-        return popupWindow;
-    }
-
-    private ArrayAdapter<String> versesAdapter(String dogsArray[]) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dogsArray) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                // setting the ID and text for every items in the list
-                String item = getItem(position);
-                String[] itemArr = item.split("::");
-                String text = itemArr[0];
-                String id = itemArr[1];
-
-                // visual settings for the list item
-                TextView listItem = new TextView(MainActivity.this);
-
-                listItem.setText(text);
-                listItem.setTag(id);
-                listItem.setTextSize(16);
-                listItem.setPadding(10, 10, 10, 10);
-                listItem.setTextColor(Color.WHITE);
-
-                return listItem;
-            }
-        };
-
-        return adapter;
     }
 
     @Override
     public void onBackPressed() {
-        if (popupSearchResults.isShowing())
-            popupSearchResults.dismiss();
-        else {
-            MenuItem searchItem = actionBarMenu.findItem(R.id.action_search);
-            mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            if (!mSearchView.isIconified())
-                mSearchView.setIconified(true);
-            else
-                super.onBackPressed();
-        }
+        if (!searchResultsPopup.hide())
+            super.onBackPressed();
     }
 
     // TODO: restore navigationDrawer
@@ -227,29 +129,18 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         //}
         getMenuInflater().inflate(R.menu.main, menu);
 
-        actionBarMenu = menu;
-
         MenuItem searchItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         mSearchView.setOnQueryTextListener(this);
+
+        searchResultsPopup = new SearchResultsPopup(this, mSearchView);
 
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        if (listaDeVersiculos == null)
-            listaDeVersiculos = new ListaDeVersiculos(this);
-
-        ArrayList<String> versiculos = listaDeVersiculos.Busca(s);
-
-        popUpContents = versiculos.toArray(new String[versiculos.size()]);
-        if (popupSearchResults.isShowing()) {
-            popupSearchResults.dismiss();
-        }
-        popupSearchResults = popupSearchResults();
-
-        popupSearchResults.showAsDropDown(findViewById(R.id.action_search), -5, 0);
+        searchResultsPopup.submit(s);
         return true;
     }
 
