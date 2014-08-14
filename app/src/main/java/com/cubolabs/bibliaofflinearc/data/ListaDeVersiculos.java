@@ -53,10 +53,10 @@ public class ListaDeVersiculos {
         final ArrayList<String> listaDeVersos = new ArrayList<String>();
 
         for (int i = 0; i < versiculos.size(); ++i) {
-            String fullVerse = versiculos.get(i).getTexto() + "::";
+            String fullVerse = versiculos.get(i).getTexto() + "=>";
 
             fullVerse += versiculos.get(i).getLivro().getNome();
-            fullVerse += " " + versiculos.get(i).getCapitulo();
+            fullVerse += ", " + versiculos.get(i).getCapitulo();
             fullVerse += ":" + versiculos.get(i).getVersiculo();
 
             listaDeVersos.add(fullVerse);

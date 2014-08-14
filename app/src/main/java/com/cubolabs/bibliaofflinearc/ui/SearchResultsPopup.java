@@ -70,9 +70,9 @@ public class SearchResultsPopup {
                 String selectedItemTag = v.getTag().toString();
                 //Toast.makeText(mContext, selectedItemTag, Toast.LENGTH_SHORT).show();
 
-                String[] livroCapituloArr = selectedItemTag.split(" |:");
+                String[] livroCapituloArr = selectedItemTag.split(",|:");
                 String livro = livroCapituloArr[0];
-                Integer capitulo = Integer.parseInt(livroCapituloArr[1]);
+                Integer capitulo = Integer.parseInt(livroCapituloArr[1].trim());
                 //Integer versiculo = Integer.parseInt(livroCapituloArr[2]);
 
                 Fragment newFragment =
@@ -110,7 +110,7 @@ public class SearchResultsPopup {
             public View getView(int position, View convertView, ViewGroup parent) {
                 // setting the ID and text for every items in the list
                 String item = getItem(position);
-                String[] itemArr = item.split("::");
+                String[] itemArr = item.split("=>");
                 String verseText = itemArr[0];
                 String bookChapterVerse = itemArr[1];
 
