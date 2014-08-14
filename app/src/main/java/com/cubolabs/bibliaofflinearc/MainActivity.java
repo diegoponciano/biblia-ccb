@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private SearchView mSearchView;
+    private SearchView searchView;
     private SearchResultsPopup searchResultsPopup;
 
     @Override
@@ -129,14 +129,14 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         getMenuInflater().inflate(R.menu.main, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        mSearchView.setOnQueryTextListener(this);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
 
-        for (TextView textView : ViewUtils.findChildrenByClass(mSearchView, TextView.class)) {
+        for (TextView textView : ViewUtils.findChildrenByClass(searchView, TextView.class)) {
             textView.setTextColor(Color.WHITE);
         }
 
-        searchResultsPopup = new SearchResultsPopup(this, mSearchView, searchItem);
+        searchResultsPopup = new SearchResultsPopup(this, searchView, searchItem);
 
         return true;
     }
@@ -157,7 +157,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_search:
-                mSearchView.setIconified(false);
+                searchView.setIconified(false);
                 return true;
             case R.id.action_settings:
                 return true;
