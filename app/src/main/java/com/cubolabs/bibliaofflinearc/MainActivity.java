@@ -8,17 +8,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
 import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
 import com.cubolabs.bibliaofflinearc.ui.SearchResultsPopup;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import com.cubolabs.bibliaofflinearc.ui.ViewUtils;
 
 public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
         // TODO: restore navigationDrawer
@@ -136,32 +132,13 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         mSearchView.setOnQueryTextListener(this);
 
-        for (TextView textView : findChildrenByClass(mSearchView, TextView.class)) {
+        for (TextView textView : ViewUtils.findChildrenByClass(mSearchView, TextView.class)) {
             textView.setTextColor(Color.WHITE);
         }
 
         searchResultsPopup = new SearchResultsPopup(this, mSearchView, searchItem);
 
         return true;
-    }
-
-    public static <V extends View> Collection<V> findChildrenByClass(ViewGroup viewGroup, Class<V> clazz) {
-        return gatherChildrenByClass(viewGroup, clazz, new ArrayList<V>());
-    }
-
-    private static <V extends View> Collection<V> gatherChildrenByClass(ViewGroup viewGroup, Class<V> clazz, Collection<V> childrenFound) {
-        for (int i = 0; i < viewGroup.getChildCount(); i++)
-        {
-            final View child = viewGroup.getChildAt(i);
-            if (clazz.isAssignableFrom(child.getClass())) {
-                childrenFound.add((V)child);
-            }
-            if (child instanceof ViewGroup) {
-                gatherChildrenByClass((ViewGroup) child, clazz, childrenFound);
-            }
-        }
-
-        return childrenFound;
     }
 
     @Override
