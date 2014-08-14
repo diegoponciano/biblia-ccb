@@ -5,18 +5,19 @@ import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cubolabs.bibliaofflinearc.MainActivity;
 import com.cubolabs.bibliaofflinearc.R;
@@ -84,12 +85,12 @@ public class SearchResultsPopup {
                 transaction.addToBackStack(null);
 
                 transaction.commit();
-
             }
         });
 
         // some other visual settings
-        popupWindow.setFocusable(false);
+        popupWindow.setFocusable(true);
+        //popupWindow.setTouchable(true);
         //popupWindow.setFocusable(true);
         //popupWindow.setWidth(250);
 
@@ -102,26 +103,43 @@ public class SearchResultsPopup {
         return popupWindow;
     }
 
-    private ArrayAdapter<String> versesAdapter(String dogsArray[]) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, dogsArray) {
+    private ArrayAdapter<String> versesAdapter(String verses[]) {
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_2, verses) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 // setting the ID and text for every items in the list
                 String item = getItem(position);
                 String[] itemArr = item.split("::");
-                String text = itemArr[0];
-                String id = itemArr[1];
+                String verseText = itemArr[0];
+                String bookChapterVerse = itemArr[1];
+
+                View row;
+                if(convertView == null)
+                {
+                    Context ctx = activity.getApplicationContext();
+                    LayoutInflater inflater =
+                            (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    row = inflater.inflate(android.R.layout.simple_list_item_2, null);
+                }
+                else
+                {
+                    row = convertView;
+                }
+                //View row = super.getView(position, convertView, parent);
+                row.setTag(bookChapterVerse);
 
                 // visual settings for the list item
-                TextView listItem = new TextView(activity);
+                TextView v = (TextView) row.findViewById(android.R.id.text1);
+                v.setText(verseText);
+                v.setTextSize(16);
+                v.setPadding(10, 10, 10, 10);
+                v.setTextColor(Color.WHITE);
 
-                listItem.setText(text);
-                listItem.setTag(id);
-                listItem.setTextSize(16);
-                listItem.setPadding(10, 15, 10, 10);
-                listItem.setTextColor(Color.WHITE);
+                v = (TextView) row.findViewById(android.R.id.text2);
+                v.setText(bookChapterVerse);
 
-                return listItem;
+                return row;
             }
         };
         return adapter;
@@ -145,6 +163,12 @@ public class SearchResultsPopup {
 
         ArrayList<String> versiculos = listaDeVersiculos.Busca(s.trim());
         update(versiculos);
+
+        mSearchView.clearFocus();
+        InputMethodManager imm =
+                (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
+        popupSearchResults.getContentView().requestFocus();
     }
 
     private void update(ArrayList<String> versiculos) {
