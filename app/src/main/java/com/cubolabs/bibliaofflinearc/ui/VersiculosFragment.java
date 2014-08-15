@@ -9,6 +9,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -18,9 +19,11 @@ import android.support.v7.view.ActionMode;
 import android.text.Html;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,6 +39,12 @@ public class VersiculosFragment extends ListFragment {
 	private static final String ARG_BOOK = "livro";
 	private static final String ARG_CHAPTER = "capitulo";
     private ActionMode actionMode;
+    private SharedPreferences prefs;
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
 
 	public static VersiculosFragment newInstance(String livro, Integer capitulo) {
 		VersiculosFragment fragment = new VersiculosFragment();
@@ -60,6 +69,8 @@ public class VersiculosFragment extends ListFragment {
         ActionBar actionBar =
                 ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(this.currentChapter());
+
+        prefs = getActivity().getSharedPreferences("com.cubolabs.bibliaofflinearc", Context.MODE_PRIVATE);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -142,6 +153,13 @@ public class VersiculosFragment extends ListFragment {
                 return true;
             }
         });
+        gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector());
+        gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+        lv.setOnTouchListener(gestureListener);
     }
 	
 	@Override
@@ -247,6 +265,30 @@ public class VersiculosFragment extends ListFragment {
         public boolean onPrepareActionMode(ActionMode mode, Menu arg1) {
             // TODO Auto-generated method stub
             return false;
+        }
+    }
+
+    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false;
+                // right to left swipe
+                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                // nothing
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
         }
     }
 }
