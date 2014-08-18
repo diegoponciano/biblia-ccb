@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release {
-            storeFile file("C:\\Users\\tdp112231\\bibliaccb.jks")
+            storeFile file("bibliaccb.jks")
             storePassword "bibliaccb"
             keyAlias "bibliaccb"
             keyPassword "bibliaccb"
