@@ -1,8 +1,5 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
-import com.cubolabs.bibliaofflinearc.R;
-import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
@@ -12,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -30,6 +29,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
+import com.cubolabs.bibliaofflinearc.data.Palavra;
 
 import java.util.ArrayList;
 
@@ -58,7 +61,7 @@ public class VersiculosFragment extends ListFragment {
     public VersiculosFragment() {
     }
 
-    private String currentChapter(){
+    private String currentChapter() {
         final int capitulo = getArguments().getInt(ARG_CHAPTER);
         final String livro = getArguments().getString(ARG_BOOK);
         return livro + ", " + String.valueOf(capitulo);
@@ -275,12 +278,53 @@ public class VersiculosFragment extends ListFragment {
                 if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
                     return false;
                 // right to left swipe
+
+                final int capitulo = getArguments().getInt(ARG_CHAPTER);
+                final String livro = getArguments().getString(ARG_BOOK);
+
                 if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                    Palavra proximo = listaDeVersiculos.ProximoCapitulo(livro, capitulo);
+                    if (proximo != null) {
+                        Fragment newFragment = VersiculosFragment.newInstance(
+                                proximo.getLivro().getNome(),
+                                ((int) proximo.getCapitulo())
+                        );
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.setCustomAnimations(
+                                R.anim.enter,
+                                R.anim.exit,
+                                R.anim.pop_enter,
+                                R.anim.pop_exit);
+
+                        transaction.addToBackStack(null);
+                        transaction.replace(R.id.container, newFragment);
+
+                        transaction.commit();
+                    }
                 }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                    Palavra anterior = listaDeVersiculos.CapituloAnterior(livro, capitulo);
+                    if (anterior != null) {
+                        Fragment newFragment = VersiculosFragment.newInstance(
+                                anterior.getLivro().getNome(),
+                                ((int) anterior.getCapitulo())
+                        );
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.setCustomAnimations(
+                                R.anim.enterleft,
+                                R.anim.exitleft,
+                                R.anim.pop_enterleft,
+                                R.anim.pop_exitleft);
+
+                        transaction.addToBackStack(null);
+                        transaction.replace(R.id.container, newFragment);
+
+                        transaction.commit();
+                    }
                 }
             } catch (Exception e) {
+                Log.d("MyGestureDetector.onFling", e.getMessage());
                 // nothing
             }
             return false;
