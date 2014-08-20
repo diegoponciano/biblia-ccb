@@ -80,6 +80,6 @@ public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onDown(MotionEvent e) {
-        return true;
+        return false;
     }
 }
