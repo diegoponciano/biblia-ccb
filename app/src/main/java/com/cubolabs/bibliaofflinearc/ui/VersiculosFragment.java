@@ -2,6 +2,7 @@ package com.cubolabs.bibliaofflinearc.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -37,7 +39,7 @@ import com.cubolabs.bibliaofflinearc.data.Palavra;
 import java.util.ArrayList;
 
 public class VersiculosFragment extends ListFragment {
-    private static final String TAG = VersiculosFragment.class.getSimpleName();
+    public static final String TAG = VersiculosFragment.class.getSimpleName();
 	private ListaDeVersiculos listaDeVersiculos;
 	private static final String ARG_BOOK = "livro";
 	private static final String ARG_CHAPTER = "capitulo";
@@ -271,6 +273,16 @@ public class VersiculosFragment extends ListFragment {
         }
     }
 
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (FragmentUtils.sDisableFragmentAnimations) {
+            Animation a = new Animation() {};
+            a.setDuration(0);
+            return a;
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
     class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -286,6 +298,7 @@ public class VersiculosFragment extends ListFragment {
                     //Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
                     Palavra proximo = listaDeVersiculos.ProximoCapitulo(livro, capitulo);
                     if (proximo != null) {
+
                         Fragment newFragment = VersiculosFragment.newInstance(
                                 proximo.getLivro().getNome(),
                                 ((int) proximo.getCapitulo())
@@ -298,8 +311,8 @@ public class VersiculosFragment extends ListFragment {
                                 R.anim.pop_exit);
 
                         transaction.addToBackStack(null);
+                        FragmentUtils.clearBackStack(getActivity());
                         transaction.replace(R.id.container, newFragment);
-
                         transaction.commit();
                     }
                 }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
@@ -318,8 +331,8 @@ public class VersiculosFragment extends ListFragment {
                                 R.anim.pop_exitleft);
 
                         transaction.addToBackStack(null);
+                        FragmentUtils.clearBackStack(getActivity());
                         transaction.replace(R.id.container, newFragment);
-
                         transaction.commit();
                     }
                 }

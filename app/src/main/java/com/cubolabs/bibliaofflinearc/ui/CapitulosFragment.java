@@ -17,6 +17,7 @@ import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeLivros;
 
 public class CapitulosFragment extends Fragment {
+    public static final String TAG = CapitulosFragment.class.getSimpleName();
 	private ListaDeLivros listaDeLivros;
 	private static final String ARG_BOOK = "livro";
 	
@@ -79,9 +80,8 @@ public class CapitulosFragment extends Fragment {
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
 		
-		transaction.replace(R.id.container, newFragment);
-		transaction.addToBackStack(null);
-		
+		transaction.replace(R.id.container, newFragment, TAG);
+		transaction.addToBackStack(TAG);
 		transaction.commit();
 	}
 }
