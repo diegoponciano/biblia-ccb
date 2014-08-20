@@ -40,6 +40,11 @@ public class ContextualActionBar implements ActionMode.Callback {
                 versesToShareHtml.append("<br>");
             }
         }
+        versesToShare.append("\n");
+        versesToShare.append(versiculosFragment.selectedVersesTitle());
+        versesToShareHtml.append("<br>");
+        versesToShareHtml.append(versiculosFragment.selectedVersesTitle());
+
         switch (item.getItemId()) {
             case R.id.menu_item_share:
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);

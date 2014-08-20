@@ -2,8 +2,6 @@ package com.cubolabs.bibliaofflinearc.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -12,6 +10,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
+import android.util.SparseBooleanArray;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,6 +25,7 @@ import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class VersiculosFragment extends ListFragment {
     public static final String TAG = VersiculosFragment.class.getSimpleName();
@@ -52,12 +52,46 @@ public class VersiculosFragment extends ListFragment {
     public VersiculosFragment() {
     }
 
-    public String currentChapter() {
-        final int capitulo = getArguments().getInt(ARG_CHAPTER);
-        final String livro = getArguments().getString(ARG_BOOK);
-        return livro + ", " + String.valueOf(capitulo);
+    private int capitulo() {
+        return getArguments().getInt(ARG_CHAPTER);
     }
-    
+    private String livro() {
+        return getArguments().getString(ARG_BOOK);
+    }
+
+    public String currentChapter() {
+        return livro() + ", " + String.valueOf(capitulo());
+    }
+
+    public String selectedVersesTitle() {
+        String title = livro() + ", " + String.valueOf(capitulo())+ ":";
+
+        ArrayList<Integer> versesIdcs = new ArrayList<Integer>();
+        int len = getListView().getCount();
+        SparseBooleanArray checked = getListView().getCheckedItemPositions();
+        String versesIdcsText = "";
+        for (int i = 0; i < len; i++){
+            if (checked.get(i)) {
+                versesIdcs.add(i + 1);
+                versesIdcsText += String.valueOf(i+1) + ",";
+            }
+        }
+        if (versesIdcsText.endsWith(","))
+            versesIdcsText = versesIdcsText.substring(0, versesIdcsText.length()-1);
+
+        if(Collections.max(versesIdcs)-Collections.min(versesIdcs) > versesIdcs.size()-1) {
+            title += versesIdcsText;
+        }
+        else if (versesIdcs.size() == 1) {
+            title += String.valueOf(versesIdcs.get(0));
+        }
+        else {
+            title += Collections.min(versesIdcs) + "-" + Collections.max(versesIdcs);
+        }
+
+        return title;
+    }
+
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActionBar actionBar =
