@@ -2,27 +2,18 @@ package com.cubolabs.bibliaofflinearc.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
-import android.text.Html;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,24 +21,22 @@ import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
-import com.cubolabs.bibliaofflinearc.data.Palavra;
 
 import java.util.ArrayList;
 
 public class VersiculosFragment extends ListFragment {
     public static final String TAG = VersiculosFragment.class.getSimpleName();
 	private ListaDeVersiculos listaDeVersiculos;
-	private static final String ARG_BOOK = "livro";
-	private static final String ARG_CHAPTER = "capitulo";
-    private ActionMode actionMode;
+    public static final String ARG_BOOK = "livro";
+    public static final String ARG_CHAPTER = "capitulo";
+    public ActionMode actionMode;
     private SharedPreferences prefs;
-    private static final int SWIPE_MIN_DISTANCE = 120;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    public static final int SWIPE_MIN_DISTANCE = 120;
+    public static final int SWIPE_MAX_OFF_PATH = 250;
+    public static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
 
@@ -63,7 +52,7 @@ public class VersiculosFragment extends ListFragment {
     public VersiculosFragment() {
     }
 
-    private String currentChapter() {
+    public String currentChapter() {
         final int capitulo = getArguments().getInt(ARG_CHAPTER);
         final String livro = getArguments().getString(ARG_BOOK);
         return livro + ", " + String.valueOf(capitulo);
@@ -151,14 +140,14 @@ public class VersiculosFragment extends ListFragment {
                 if (checkedItemsCount(lv) > 0) {
                     if (actionMode == null) {
                         actionMode = ((ActionBarActivity) getActivity())
-                                .startSupportActionMode(new ContextualActionBar());
+                                .startSupportActionMode(new ContextualActionBar(VersiculosFragment.this));
                     }
                 }
                 listItemAfterClick(lv, adapter);
                 return true;
             }
         });
-        gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector());
+        gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector(this, listaDeVersiculos));
         gestureListener = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return gestureDetector.onTouchEvent(event);
@@ -174,105 +163,6 @@ public class VersiculosFragment extends ListFragment {
         listaDeVersiculos = new ListaDeVersiculos(activity);
     }
 
-    private void copyToClipboard(String extraText, String extraHtmlText) {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ) {
-            final android.text.ClipboardManager clipboard =
-                    (android.text.ClipboardManager)
-                            getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
-            clipboard.setText(extraText);
-        }
-        else {
-            ClipboardManager clipboard = (ClipboardManager)
-                    getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newHtmlText("Verses clipboard",
-                    extraText,
-                    extraHtmlText);
-            clipboard.setPrimaryClip(clip);
-        }
-    }
-
-    private class ContextualActionBar implements ActionMode.Callback {
-        private int nr = 0;
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            StringBuilder versesToShare = new StringBuilder();
-            StringBuilder versesToShareHtml = new StringBuilder();
-            int len = getListView().getCount();
-            SparseBooleanArray checked = getListView().getCheckedItemPositions();
-            for (int i = 0; i < len; i++){
-                if (checked.get(i)) {
-                    versesToShare.append(" " + String.valueOf(i+1) + ". ");
-                    versesToShare.append(getListAdapter().getItem(i).toString());
-                    versesToShare.append("\n");
-
-                    versesToShareHtml.append("<b>"+String.valueOf(i+1) + ". </b>");
-                    versesToShareHtml.append(getListAdapter().getItem(i).toString());
-                    versesToShareHtml.append("<br>");
-                }
-            }
-            switch (item.getItemId()) {
-                case R.id.menu_item_share:
-                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, currentChapter());
-                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "\n"+versesToShare.toString());
-                    sharingIntent.putExtra(Intent.EXTRA_HTML_TEXT,
-                            Html.fromHtml(versesToShareHtml.toString())
-                    );
-                    startActivity(Intent.createChooser(sharingIntent, "Enviar via"));
-                    break;
-                case R.id.menu_item_copy:
-                    copyToClipboard(versesToShare.toString(), versesToShareHtml.toString());
-                    Toast.makeText(getActivity(),
-                            "Copiado com sucesso!",
-                            Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Log.d(TAG, "onActionItemClicked: Unknown Menu Item Received!");
-                    mode.finish();
-                    break;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            getActivity().getMenuInflater()
-                    .inflate(R.menu.listcab_menu, menu);
-            return true;
-
-            //Initialize the ShareActionProvider
-            /*MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
-            mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareMenuItem);
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, "test message");
-            mShareActionProvider.setShareIntent(shareIntent);
-            return true;*/
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            //Nullify the actionMode object
-            //so that the onClickListener can identify whether the ActionMode is ON
-            actionMode = null;
-
-            //Uncheck all checked messages
-            SparseBooleanArray selectedItems = getListView().getCheckedItemPositions();
-            for(int i=0;i<selectedItems.size();i++){
-                getListView().setItemChecked(selectedItems.keyAt(i), false);
-            }
-            nr = 0;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu arg1) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-    }
-
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         if (FragmentUtils.sDisableFragmentAnimations) {
@@ -283,69 +173,4 @@ public class VersiculosFragment extends ListFragment {
         return super.onCreateAnimation(transit, enter, nextAnim);
     }
 
-    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            try {
-                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
-                    return false;
-                // right to left swipe
-
-                final int capitulo = getArguments().getInt(ARG_CHAPTER);
-                final String livro = getArguments().getString(ARG_BOOK);
-
-                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    //Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
-                    Palavra proximo = listaDeVersiculos.ProximoCapitulo(livro, capitulo);
-                    if (proximo != null) {
-
-                        Fragment newFragment = VersiculosFragment.newInstance(
-                                proximo.getLivro().getNome(),
-                                ((int) proximo.getCapitulo())
-                        );
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.setCustomAnimations(
-                                R.anim.enter,
-                                R.anim.exit,
-                                R.anim.pop_enter,
-                                R.anim.pop_exit);
-
-                        transaction.addToBackStack(null);
-                        FragmentUtils.clearBackStack(getActivity());
-                        transaction.replace(R.id.container, newFragment, TAG);
-                        transaction.commit();
-                    }
-                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    //Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
-                    Palavra anterior = listaDeVersiculos.CapituloAnterior(livro, capitulo);
-                    if (anterior != null) {
-                        Fragment newFragment = VersiculosFragment.newInstance(
-                                anterior.getLivro().getNome(),
-                                ((int) anterior.getCapitulo())
-                        );
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.setCustomAnimations(
-                                R.anim.enterleft,
-                                R.anim.exitleft,
-                                R.anim.pop_enterleft,
-                                R.anim.pop_exitleft);
-
-                        transaction.addToBackStack(null);
-                        FragmentUtils.clearBackStack(getActivity());
-                        transaction.replace(R.id.container, newFragment, TAG);
-                        transaction.commit();
-                    }
-                }
-            } catch (Exception e) {
-                Log.d("MyGestureDetector.onFling", e.getMessage());
-                // nothing
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-    }
 }
