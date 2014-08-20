@@ -26,6 +26,7 @@ import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 import java.util.ArrayList;
 
 public class SearchResultsPopup {
+    public static final String TAG = SearchResultsPopup.class.getSimpleName();
     private MainActivity activity;
     private String popUpContents[];
     private PopupWindow popupSearchResults;
@@ -81,8 +82,8 @@ public class SearchResultsPopup {
                         activity.getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
 
-                transaction.replace(R.id.container, newFragment);
-                transaction.addToBackStack(null);
+                transaction.addToBackStack(TAG);
+                transaction.replace(R.id.container, newFragment, TAG);
 
                 transaction.commit();
             }

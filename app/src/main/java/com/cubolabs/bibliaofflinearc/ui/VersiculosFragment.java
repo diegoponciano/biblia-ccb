@@ -312,7 +312,7 @@ public class VersiculosFragment extends ListFragment {
 
                         transaction.addToBackStack(null);
                         FragmentUtils.clearBackStack(getActivity());
-                        transaction.replace(R.id.container, newFragment);
+                        transaction.replace(R.id.container, newFragment, TAG);
                         transaction.commit();
                     }
                 }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
@@ -332,7 +332,7 @@ public class VersiculosFragment extends ListFragment {
 
                         transaction.addToBackStack(null);
                         FragmentUtils.clearBackStack(getActivity());
-                        transaction.replace(R.id.container, newFragment);
+                        transaction.replace(R.id.container, newFragment, TAG);
                         transaction.commit();
                     }
                 }
