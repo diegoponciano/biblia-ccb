@@ -82,7 +82,8 @@ public class SearchResultsPopup {
                         activity.getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
 
-                transaction.addToBackStack(TAG);
+                transaction.addToBackStack(null);
+                FragmentUtils.clearBackStack(activity);
                 transaction.replace(R.id.container, newFragment, TAG);
 
                 transaction.commit();
