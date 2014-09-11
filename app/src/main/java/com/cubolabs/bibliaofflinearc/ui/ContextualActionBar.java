@@ -1,10 +1,14 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.view.ActionMode;
 import android.text.Html;
 import android.util.Log;
@@ -17,25 +21,38 @@ import com.cubolabs.bibliaofflinearc.R;
 
 public class ContextualActionBar implements ActionMode.Callback {
     private VersiculosFragment versiculosFragment;
+    private Activity activity;
     private int nr = 0;
 
     public ContextualActionBar(VersiculosFragment versiculosFragment) {
         this.versiculosFragment = versiculosFragment;
+        this.activity = versiculosFragment.getActivity();
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        Boolean versesBottom = preferences.getBoolean("versesbottom_preference", false);
+
         StringBuilder versesToShare = new StringBuilder();
         StringBuilder versesToShareHtml = new StringBuilder();
         int len = versiculosFragment.getListView().getCount();
         SparseBooleanArray checked = versiculosFragment.getListView().getCheckedItemPositions();
         for (int i = 0; i < len; i++){
             if (checked.get(i)) {
-                versesToShare.append(" " + String.valueOf(i+1) + ". ");
+                if(!versesBottom)
+                    versesToShare.append(" " + String.valueOf(i+1) + ". ");
+                else
+                    versesToShare.append(" ");
+
                 versesToShare.append(versiculosFragment.getListAdapter().getItem(i).toString());
                 versesToShare.append("\n");
 
-                versesToShareHtml.append("<b>"+String.valueOf(i+1) + ". </b>");
+                if(!versesBottom)
+                    versesToShareHtml.append("<b>"+String.valueOf(i+1) + ". </b>");
+                else
+                    versesToShareHtml.append(" ");
+
                 versesToShareHtml.append(versiculosFragment.getListAdapter().getItem(i).toString());
                 versesToShareHtml.append("<br>");
             }

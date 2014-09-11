@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -64,29 +66,35 @@ public class VersiculosFragment extends ListFragment {
     }
 
     public String selectedVersesTitle() {
-        String title = livro() + ", " + String.valueOf(capitulo())+ ":";
+        String title = livro() + ", " + String.valueOf(capitulo());
 
-        ArrayList<Integer> versesIdcs = new ArrayList<Integer>();
-        int len = getListView().getCount();
-        SparseBooleanArray checked = getListView().getCheckedItemPositions();
-        String versesIdcsText = "";
-        for (int i = 0; i < len; i++){
-            if (checked.get(i)) {
-                versesIdcs.add(i + 1);
-                versesIdcsText += String.valueOf(i+1) + ",";
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        Boolean versesBottom = preferences.getBoolean("versesbottom_preference", false);
+
+        if(versesBottom) {
+            title += ":";
+
+            ArrayList<Integer> versesIdcs = new ArrayList<Integer>();
+            int len = getListView().getCount();
+            SparseBooleanArray checked = getListView().getCheckedItemPositions();
+            String versesIdcsText = "";
+            for (int i = 0; i < len; i++) {
+                if (checked.get(i)) {
+                    versesIdcs.add(i + 1);
+                    versesIdcsText += String.valueOf(i + 1) + ",";
+                }
             }
-        }
-        if (versesIdcsText.endsWith(","))
-            versesIdcsText = versesIdcsText.substring(0, versesIdcsText.length()-1);
+            if (versesIdcsText.endsWith(","))
+                versesIdcsText = versesIdcsText.substring(0, versesIdcsText.length() - 1);
 
-        if(Collections.max(versesIdcs)-Collections.min(versesIdcs) > versesIdcs.size()-1) {
-            title += versesIdcsText;
-        }
-        else if (versesIdcs.size() == 1) {
-            title += String.valueOf(versesIdcs.get(0));
-        }
-        else {
-            title += Collections.min(versesIdcs) + "-" + Collections.max(versesIdcs);
+            if (Collections.max(versesIdcs) - Collections.min(versesIdcs) > versesIdcs.size() - 1) {
+                title += versesIdcsText;
+            } else if (versesIdcs.size() == 1) {
+                title += String.valueOf(versesIdcs.get(0));
+            } else {
+                title += Collections.min(versesIdcs) + "-" + Collections.max(versesIdcs);
+            }
         }
 
         return title;

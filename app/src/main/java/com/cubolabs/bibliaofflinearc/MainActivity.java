@@ -1,6 +1,8 @@
 package com.cubolabs.bibliaofflinearc;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
@@ -10,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.cubolabs.bibliaofflinearc.ui.EditPreferences;
+import com.cubolabs.bibliaofflinearc.ui.EditPreferencesHC;
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
 import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
@@ -160,6 +164,12 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
                 searchView.setIconified(false);
                 return true;
             case R.id.action_settings:
+                if (Build.VERSION.SDK_INT< Build.VERSION_CODES.HONEYCOMB) {
+                    startActivity(new Intent(this, EditPreferences.class));
+                }
+                else {
+                    startActivity(new Intent(this, EditPreferencesHC.class));
+                }
                 return true;
         }
         return false;
