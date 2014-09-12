@@ -40,4 +40,5 @@
     <string name="sharing_preferences">Compartilhamento</string>
     <string name="title_versesbottom_preference">Números dos versículos no final</string>
     <string name="summary_versesbottom_preference">Com essa opção marcada, os versículos copiados são indicados no final.</string>
+    <string name="swipe_to_change">Arraste pros lados pra mudar de página!</string>
 </resources>

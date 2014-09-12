@@ -2,12 +2,10 @@ package com.cubolabs.bibliaofflinearc.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -35,7 +33,6 @@ public class VersiculosFragment extends ListFragment {
     public static final String ARG_BOOK = "livro";
     public static final String ARG_CHAPTER = "capitulo";
     public ActionMode actionMode;
-    private SharedPreferences prefs;
     public static final int SWIPE_MIN_DISTANCE = 120;
     public static final int SWIPE_MAX_OFF_PATH = 250;
     public static final int SWIPE_THRESHOLD_VELOCITY = 200;
@@ -105,8 +102,6 @@ public class VersiculosFragment extends ListFragment {
         ActionBar actionBar =
                 ((ActionBarActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(this.currentChapter());
-
-        prefs = getActivity().getSharedPreferences("com.cubolabs.bibliaofflinearc", Context.MODE_PRIVATE);
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }

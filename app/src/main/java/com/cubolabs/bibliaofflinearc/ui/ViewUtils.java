@@ -1,5 +1,6 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,6 +25,14 @@ public class ViewUtils {
         }
 
         return childrenFound;
+    }
+
+    public static Boolean IsLastItem(ArrayList<String> arrayList, int position) {
+        return position == arrayList.size()-1;
+    }
+
+    public static Boolean AboveHoneycomb() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -26,7 +26,7 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
     public VersiculosAdapter(Context context, ArrayList<String> versiculos, int capitulo) {
         super(context,
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                android.R.layout.simple_list_item_activated_1 :
+                R.layout.versiculo_hc_item_1:
                 R.layout.versiculo_checked), //android.R.layout.simple_list_item_checked
                 android.R.id.text1,
                 versiculos);
@@ -37,9 +37,19 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = super.getView(position, convertView, parent);
+        View view;
+        if(ViewUtils.IsLastItem(versiculos, position)) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
+                    R.layout.versiculo_hc_item_2:
+                    R.layout.versiculo_checked_2, parent, false);
+            TextView hint = (TextView) view.findViewById(android.R.id.text2);
+            hint.setText(R.string.swipe_to_change);
+        }
+        else
+            view = super.getView(position, convertView, parent);
 
-        final TextView versiculoText = (TextView) view.findViewById(android.R.id.text1);
+        TextView versiculoText = (TextView) view.findViewById(android.R.id.text1);
 
         String indice;
         SpannableString spanText;
@@ -57,7 +67,6 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
         spanText = new SpannableString(" "+indice+"  "+versiculos.get(position));
         spanText.setSpan(indiceStyle, 1, 1+indice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         versiculoText.setText(spanText, TextView.BufferType.SPANNABLE);
-        versiculoText.setPadding(8, 0, 2, 4);
 
         return view;
     }
