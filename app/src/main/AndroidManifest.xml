@@ -27,8 +27,8 @@
             android:label="@string/preferences"
             android:configChanges="screenSize|orientation"  >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name=".PREFERENCES" />
+                <category android:name="android.intent.category.PREFERENCE" />
             </intent-filter>
         </activity>
         <activity
@@ -36,8 +36,8 @@
             android:label="@string/preferences"
             android:configChanges="screenSize|orientation"  >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name=".PREFERENCES" />
+                <category android:name="android.intent.category.PREFERENCE" />
             </intent-filter>
         </activity>
     </application>
