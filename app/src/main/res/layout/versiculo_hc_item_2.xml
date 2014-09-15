@@ -29,11 +29,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:gravity="center_vertical"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
         android:background="?android:attr/activatedBackgroundIndicator"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingLeft="8dp"
+        android:paddingLeft="6dp"
         android:paddingTop="0dp"
         android:paddingRight="2dp"
         android:paddingBottom="4dp"
@@ -46,6 +44,7 @@
         android:layout_alignStart="@android:id/text1"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:gravity="center_horizontal"
+        android:textColor="#444"
         />
 
 </TwoLineListItem>
