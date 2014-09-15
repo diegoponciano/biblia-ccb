@@ -21,11 +21,12 @@ import java.util.ArrayList;
 public class VersiculosAdapter extends ArrayAdapter<String> {
     private final ArrayList<String> versiculos;
     private final int capitulo;
+    private final int versesSize;
     private final Context context;
 
     public VersiculosAdapter(Context context, ArrayList<String> versiculos, int capitulo) {
         super(context,
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+                (ViewUtils.AboveHoneycomb() ?
                 R.layout.versiculo_hc_item_1:
                 R.layout.versiculo_checked), //android.R.layout.simple_list_item_checked
                 android.R.id.text1,
@@ -33,21 +34,40 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
         this.versiculos = versiculos;
         this.capitulo = capitulo;
         this.context = context;
+        this.versesSize = versiculos.size();
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 3;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        //the result must be in the range 0 to getViewTypeCount() - 1.
+        if(position == 0)
+            return 0;
+        else if (position < versesSize-1)
+            return 1;
+        else
+            return 2;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        int itemType = getItemViewType(position);
+
         View view;
-        if(ViewUtils.IsLastItem(versiculos, position)) {
+        if(itemType == 2) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
-                    R.layout.versiculo_hc_item_2:
-                    R.layout.versiculo_checked_2, parent, false);
+                R.layout.versiculo_hc_item_2:
+                R.layout.versiculo_checked_2, parent, false);
             TextView hint = (TextView) view.findViewById(android.R.id.text2);
             hint.setText(R.string.swipe_to_change);
         }
         else
-            view = super.getView(position, convertView, parent);
+           view = super.getView(position, convertView, parent);
 
         TextView versiculoText = (TextView) view.findViewById(android.R.id.text1);
 
@@ -55,7 +75,7 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
         SpannableString spanText;
         Object indiceStyle;
 
-        if(position == 0) {
+        if(itemType == 0) {
             indice = String.valueOf(capitulo);
             indiceStyle = new RelativeSizeSpan(2f);
         }
