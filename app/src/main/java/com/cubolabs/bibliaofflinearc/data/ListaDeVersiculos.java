@@ -46,9 +46,10 @@ public class ListaDeVersiculos {
     public ArrayList<String> Busca(String s) {
         s = "%" + s + "%";
         QueryBuilder<Palavra> pqb = palavraDao.queryBuilder();
-        List<Palavra> versiculos = pqb.where(PalavraDao.Properties.Texto.like(s))
-                .orderAsc(PalavraDao.Properties.Id_livro)
-                .list();
+        List<Palavra> versiculos = pqb.where(pqb.or(PalavraDao.Properties.Texto.like(s),
+                                                    PalavraDao.Properties.Cabecalho.like(s)))
+                                       .orderAsc(PalavraDao.Properties.Id_livro)
+                                       .list();
 
         final ArrayList<String> listaDeVersos = new ArrayList<String>();
 

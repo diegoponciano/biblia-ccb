@@ -24,28 +24,31 @@
     android:mode="twoLine"
     >
 
-    <TextView android:id="@android:id/text1"
+    <TextView android:id="@android:id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:gravity="center_vertical"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
         android:background="?android:attr/activatedBackgroundIndicator"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        />
+
+    <TextView android:id="@android:id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@android:id/text2"
+        android:layout_alignLeft="@android:id/text2"
+        android:layout_alignStart="@android:id/text2"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:gravity="center_vertical"
         android:paddingLeft="6dp"
         android:paddingTop="0dp"
         android:paddingRight="2dp"
         android:paddingBottom="4dp"
-        />
-
-    <TextView android:id="@android:id/text2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@android:id/text1"
-        android:layout_alignLeft="@android:id/text1"
-        android:layout_alignStart="@android:id/text1"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:gravity="center_horizontal"
-        android:textColor="#444"
         />
 
 </TwoLineListItem>

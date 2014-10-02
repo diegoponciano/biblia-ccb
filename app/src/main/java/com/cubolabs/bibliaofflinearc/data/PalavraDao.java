@@ -31,6 +31,7 @@ public class PalavraDao extends AbstractDao<Palavra, Long> {
         public final static Property Capitulo = new Property(2, short.class, "capitulo", false, "CAPITULO");
         public final static Property Versiculo = new Property(3, short.class, "versiculo", false, "VERSICULO");
         public final static Property Texto = new Property(4, String.class, "texto", false, "TEXTO");
+        public final static Property Cabecalho = new Property(5, String.class, "cabecalho", false, "CABECALHO");
     };
 
     private DaoSession daoSession;
@@ -54,7 +55,8 @@ public class PalavraDao extends AbstractDao<Palavra, Long> {
                 "'ID_LIVRO' INTEGER NOT NULL ," + // 1: id_livro
                 "'CAPITULO' INTEGER NOT NULL ," + // 2: capitulo
                 "'VERSICULO' INTEGER NOT NULL ," + // 3: versiculo
-                "'TEXTO' TEXT);"); // 4: texto
+                "'TEXTO' TEXT," + // 4: texto
+                "'CABECALHO' TEXT);"); // 5: cabecalho
     }
 
     /** Drops the underlying database table. */
@@ -80,6 +82,11 @@ public class PalavraDao extends AbstractDao<Palavra, Long> {
         if (texto != null) {
             stmt.bindString(5, texto);
         }
+
+        String cabecalho = entity.getCabecalho();
+        if (cabecalho != null) {
+            stmt.bindString(6, cabecalho);
+        }
     }
 
     @Override
@@ -102,7 +109,8 @@ public class PalavraDao extends AbstractDao<Palavra, Long> {
             cursor.getLong(offset + 1), // id_livro
             cursor.getShort(offset + 2), // capitulo
             cursor.getShort(offset + 3), // versiculo
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // texto
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // texto
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // cabecalho
         );
         return entity;
     }
@@ -115,6 +123,7 @@ public class PalavraDao extends AbstractDao<Palavra, Long> {
         entity.setCapitulo(cursor.getShort(offset + 2));
         entity.setVersiculo(cursor.getShort(offset + 3));
         entity.setTexto(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setCabecalho(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
     /** @inheritdoc */

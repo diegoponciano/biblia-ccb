@@ -15,16 +15,17 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.Palavra;
 
 import java.util.ArrayList;
 
-public class VersiculosAdapter extends ArrayAdapter<String> {
-    private final ArrayList<String> versiculos;
+public class VersiculosAdapter extends ArrayAdapter<Palavra> {
+    private final ArrayList<Palavra> versiculos;
     private final int capitulo;
     private final int versesSize;
     private final Context context;
 
-    public VersiculosAdapter(Context context, ArrayList<String> versiculos, int capitulo) {
+    public VersiculosAdapter(Context context, ArrayList<Palavra> versiculos, int capitulo) {
         super(context,
                 (ViewUtils.AboveHoneycomb() ?
                 R.layout.versiculo_hc_item_1:
@@ -39,13 +40,17 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getViewTypeCount() {
-        return 3;
+        return 5;
     }
 
     @Override
     public int getItemViewType(int position) {
         //the result must be in the range 0 to getViewTypeCount() - 1.
-        if(position == 0)
+        if (versiculos.get(position).getCabecalho() != null && position == 0)
+            return 4;
+        else if (versiculos.get(position).getCabecalho() != null)
+            return 3;
+        else if(position == 0)
             return 0;
         else if (position < versesSize-1)
             return 1;
@@ -66,6 +71,14 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
             TextView hint = (TextView) view.findViewById(android.R.id.text2);
             hint.setText(R.string.swipe_to_change);
         }
+        if(itemType == 3 | itemType == 4) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
+                    R.layout.versiculo_hc_item_3:
+                    R.layout.versiculo_checked_2, parent, false);
+            TextView hint = (TextView) view.findViewById(android.R.id.text2);
+            hint.setText(versiculos.get(position).getCabecalho());
+        }
         else
            view = super.getView(position, convertView, parent);
 
@@ -75,7 +88,7 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
         SpannableString spanText;
         Object indiceStyle;
 
-        if(itemType == 0) {
+        if(itemType == 0 || itemType == 4) {
             indice = String.valueOf(capitulo);
             indiceStyle = new RelativeSizeSpan(2f);
         }
@@ -84,7 +97,7 @@ public class VersiculosAdapter extends ArrayAdapter<String> {
             indiceStyle = new StyleSpan(Typeface.BOLD);
         }
 
-        spanText = new SpannableString(" "+indice+"  "+versiculos.get(position));
+        spanText = new SpannableString(" "+indice+"  "+versiculos.get(position).getTexto());
         spanText.setSpan(indiceStyle, 1, 1+indice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         versiculoText.setText(spanText, TextView.BufferType.SPANNABLE);
 

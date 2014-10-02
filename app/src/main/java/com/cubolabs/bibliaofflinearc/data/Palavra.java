@@ -13,6 +13,7 @@ public class Palavra {
     private short capitulo;
     private short versiculo;
     private String texto;
+    private String cabecalho;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -31,12 +32,13 @@ public class Palavra {
         this.id = id;
     }
 
-    public Palavra(Long id, long id_livro, short capitulo, short versiculo, String texto) {
+    public Palavra(Long id, long id_livro, short capitulo, short versiculo, String texto, String cabecalho) {
         this.id = id;
         this.id_livro = id_livro;
         this.capitulo = capitulo;
         this.versiculo = versiculo;
         this.texto = texto;
+        this.cabecalho = cabecalho;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -83,6 +85,14 @@ public class Palavra {
 
     public void setTexto(String texto) {
         this.texto = texto;
+    }
+
+    public String getCabecalho() {
+        return cabecalho;
+    }
+
+    public void setCabecalho(String cabecalho) {
+        this.cabecalho = cabecalho;
     }
 
     /** To-one relationship, resolved on first access. */
