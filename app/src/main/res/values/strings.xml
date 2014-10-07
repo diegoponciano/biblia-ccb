@@ -14,6 +14,7 @@
     <string name="share">Enviar</string>
     <string name="copy">Copiar</string>
     <string name="action_search">Procurar</string>
+    <string name="action_full_screen">Tela cheia</string>
     <string name="inline_preferences" >inline_preferences</string>
     <string name="title_checkbox_preference">title_checkbox_preference</string>
     <string name="summary_checkbox_preference">summary_checkbox_preference</string>

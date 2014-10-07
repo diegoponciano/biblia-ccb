@@ -1,15 +1,20 @@
 package com.cubolabs.bibliaofflinearc;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cubolabs.bibliaofflinearc.ui.EditPreferences;
@@ -34,6 +39,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
     private CharSequence mTitle;
     private SearchView searchView;
     private SearchResultsPopup searchResultsPopup;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
 	        // Set up the drawer.
 	        //mNavigationDrawerFragment.setUp(
 	        //        R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+            preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 	        ActionBar actionBar = getSupportActionBar();
 			actionBar.setTitle(R.string.app_title);
@@ -142,6 +149,12 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
 
         searchResultsPopup = new SearchResultsPopup(this, searchView, searchItem);
 
+        Boolean fullscreenPreference = preferences.getBoolean("fullscreen_preference", false);
+        if(fullscreenPreference) {
+            MenuItem fullScreenItem = menu.findItem(R.id.action_full_screen);
+            goesFullScreen(fullScreenItem);
+        }
+
         return true;
     }
 
@@ -157,11 +170,52 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         return false;
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void goesFullScreen(MenuItem item) {
+        item.setIcon(R.drawable.ic_action_return_from_full_screen);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        if (ViewUtils.AboveKitkat()) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+        preferences.edit().putBoolean("fullscreen_preference", true).commit();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void returnFromFullScreen(MenuItem item) {
+        item.setIcon(R.drawable.ic_action_full_screen);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (ViewUtils.AboveKitkat()) {
+            getWindow().getDecorView().setSystemUiVisibility(0);
+        }
+        preferences.edit().putBoolean("fullscreen_preference", false).commit();
+    }
+
+    private void toggleFullScreen(MenuItem item) {
+        boolean fullScreen =
+                (getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+        if(fullScreen) {
+            returnFromFullScreen(item);
+        }
+        else {
+            goesFullScreen(item);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_search:
                 searchView.setIconified(false);
+                return true;
+            case R.id.action_full_screen:
+                toggleFullScreen(item);
                 return true;
             case R.id.action_settings:
                 if (Build.VERSION.SDK_INT< Build.VERSION_CODES.HONEYCOMB) {
