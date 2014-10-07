@@ -7,7 +7,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 public class BibliaDatabase extends SQLiteAssetHelper {
 	//private static final String TAG = SQLiteAssetHelper.class.getSimpleName();
 	private static final String DATABASE_NAME = "biblia_arc.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 
     private static BibliaDatabase instance;
     public synchronized static BibliaDatabase getInstance(Context context) {
