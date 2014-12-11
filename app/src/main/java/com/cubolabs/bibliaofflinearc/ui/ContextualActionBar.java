@@ -1,5 +1,6 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.Palavra;
 
 public class ContextualActionBar implements ActionMode.Callback {
     private VersiculosFragment versiculosFragment;
@@ -40,12 +42,13 @@ public class ContextualActionBar implements ActionMode.Callback {
         SparseBooleanArray checked = versiculosFragment.getListView().getCheckedItemPositions();
         for (int i = 0; i < len; i++){
             if (checked.get(i)) {
+                Palavra palavra = (Palavra) versiculosFragment.getListAdapter().getItem(i);
                 if(!versesBottom)
                     versesToShare.append(" " + String.valueOf(i+1) + ". ");
                 else
                     versesToShare.append(" ");
 
-                versesToShare.append(versiculosFragment.getListAdapter().getItem(i).toString());
+                versesToShare.append(palavra.getTexto());
                 versesToShare.append("\n");
 
                 if(!versesBottom)
@@ -53,7 +56,7 @@ public class ContextualActionBar implements ActionMode.Callback {
                 else
                     versesToShareHtml.append(" ");
 
-                versesToShareHtml.append(versiculosFragment.getListAdapter().getItem(i).toString());
+                versesToShareHtml.append(palavra.getTexto());
                 versesToShareHtml.append("<br>");
             }
         }
@@ -123,6 +126,7 @@ public class ContextualActionBar implements ActionMode.Callback {
         return false;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void copyToClipboard(String extraText, String extraHtmlText) {
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ) {
             final android.text.ClipboardManager clipboard =
