@@ -7,6 +7,16 @@
             android:title="@string/title_versesbottom_preference"
             android:summary="@string/summary_versesbottom_preference" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/appearance_preferences">
+        <ListPreference
+            android:key="themes_preference"
+            android:title="@string/title_themes_preference"
+            android:summary="@string/summary_themes_preference"
+            android:entries="@array/themes"
+            android:entryValues="@array/themes_values"
+            />
+    </PreferenceCategory>
     <!--<PreferenceCategory
         android:title="@string/inline_preferences">
         <CheckBoxPreference

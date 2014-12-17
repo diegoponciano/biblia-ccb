@@ -2,4 +2,12 @@
 <resources>
     <string-array name="entries_list_preference" />
     <string-array name="entryvalues_list_preference" />
+    <string-array name="themes" >
+        <item>Tema padrão</item>
+        <item>Fundo escuro</item>
+    </string-array>
+    <string-array name="themes_values" >
+        <item>AppTheme</item>
+        <item>AppThemeDark</item>
+    </string-array>
 </resources>

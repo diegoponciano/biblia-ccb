@@ -21,41 +21,38 @@ import com.cubolabs.bibliaofflinearc.ui.EditPreferences;
 import com.cubolabs.bibliaofflinearc.ui.EditPreferencesHC;
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
-import com.cubolabs.bibliaofflinearc.ui.NavigationDrawerFragment;
 import com.cubolabs.bibliaofflinearc.ui.SearchResultsPopup;
 import com.cubolabs.bibliaofflinearc.ui.ViewUtils;
 
 public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
-        // TODO: restore navigationDrawer
-        //implements NavigationDrawerFragment.NavigationDrawerCallbacks {
-
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
-    private CharSequence mTitle;
     private SearchView searchView;
     private SearchResultsPopup searchResultsPopup;
     private SharedPreferences preferences;
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void changeTheme() {
+        String themePreference = preferences.getString("themes_preference", "AppTheme");
+        switch(themePreference) {
+            case "AppTheme":
+                setTheme(R.style.AppTheme);
+                break;
+            case "AppThemeDark":
+                setTheme(R.style.AppThemeDark);
+                break;
+            default:
+                setTheme(android.R.style.Theme_Holo_Light);
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 	 	try {
-            //mTitle = getTitle();
-
-            // TODO: restore navigationDrawer
-            //mNavigationDrawerFragment = (NavigationDrawerFragment)
-	        //       getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-
-	        // Set up the drawer.
-	        //mNavigationDrawerFragment.setUp(
-	        //        R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            changeTheme();
 
 	        ActionBar actionBar = getSupportActionBar();
 			actionBar.setTitle(R.string.app_title);
@@ -67,26 +64,6 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
 	 	catch(Exception e) {
 	 		MyMessageBox.ShowDialog(this, "MainActivity.onCreate", e.getMessage());
 	 	}
-        
-        //listview.setOnItemClickListener(listener);
-        
-        /*listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @SuppressLint("NewApi")
-			@Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                int position, long id) {
-              final String item = (String) parent.getItemAtPosition(position);
-              view.animate().setDuration(2000).alpha(0).withEndAction(new Runnable() {
-                    @SuppressLint("NewApi")
-					@Override
-                    public void run() {
-                      list.remove(item);
-                      adapter.notifyDataSetChanged();
-                      view.setAlpha(1);
-                    }
-                  });
-            }
-        });*/
     }
 
     @Override
@@ -95,48 +72,8 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
             super.onBackPressed();
     }
 
-    // TODO: restore navigationDrawer
-    //@Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        //FragmentManager fragmentManager = getSupportFragmentManager();
-        //fragmentManager.beginTransaction()
-        //        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-        //        .commit();
-    }
-    
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        //actionBar.setTitle(mTitle);
-        actionBar.setTitle(R.string.app_title);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            //getMenuInflater().inflate(R.menu.main, menu);
-            //restoreActionBar();
-        //    return true;
-        //}
         getMenuInflater().inflate(R.menu.main, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);

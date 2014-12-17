@@ -29,13 +29,14 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|left"
         android:background="?android:attr/activatedBackgroundIndicator"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:minHeight="40dip"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
         android:paddingRight="10dp"
-        />
+        android:text="@string/quick_brown_fox"
+        android:textAlignment="gravity" />
 
     <TextView android:id="@android:id/text1"
         android:layout_width="match_parent"
@@ -49,6 +50,7 @@
         android:paddingTop="0dp"
         android:paddingRight="2dp"
         android:paddingBottom="4dp"
+        android:text="@string/quick_brown_fox"
         />
 
 </TwoLineListItem>

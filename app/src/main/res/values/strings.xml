@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="quick_brown_fox">The quick brown fox jumps over the lazy dog\'s back.</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
     <string name="app_name">Bíblia ARC - CCB</string>
     <string name="app_title">Bíblia</string>
     <string name="title_section1">Bíblia</string>
@@ -39,7 +41,10 @@
     <string name="summary_child_preference">summary_child_preference</string>
     <string name="preferences">Configurações</string>
     <string name="sharing_preferences">Compartilhamento</string>
+    <string name="appearance_preferences">Aparência</string>
     <string name="title_versesbottom_preference">Números dos versículos no final</string>
+    <string name="title_themes_preference">Esquema de cores da leitura</string>
     <string name="summary_versesbottom_preference">Com essa opção marcada, os versículos copiados são indicados no final.</string>
+    <string name="summary_themes_preference">Seleciona entre o tema padrão (fundo claro) ou invertido, para a leitura.</string>
     <string name="swipe_to_change">Arraste pros lados pra mudar de página!</string>
 </resources>
