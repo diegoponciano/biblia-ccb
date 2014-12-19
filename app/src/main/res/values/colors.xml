@@ -20,6 +20,8 @@
 <resources>
     <color name="filelist_icon_backgorund">#DDDDDD</color>
     <color name="owncloud_blue_bright">#00ddff</color>
+    <color name="background_material_dark">#ff303030</color>
+    <drawable name="background_material_dark">#ff303030</drawable>
     <drawable name="transparent_color">#00000000</drawable>
 
 </resources>

@@ -33,14 +33,11 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
     private void changeTheme() {
         String themePreference = preferences.getString("themes_preference", "AppTheme");
         switch(themePreference) {
-            case "AppTheme":
-                setTheme(R.style.AppTheme);
-                break;
             case "AppThemeDark":
                 setTheme(R.style.AppThemeDark);
                 break;
             default:
-                setTheme(android.R.style.Theme_Holo_Light);
+                setTheme(R.style.AppTheme);
                 break;
         }
     }
@@ -78,7 +75,15 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(this);
+        if (searchView != null) {
+            searchView.setOnQueryTextListener(this);
+        }
+        else {
+            searchView = new SearchView(this);
+            MenuItemCompat.setShowAsAction(searchItem,
+                    MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW|MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+            MenuItemCompat.setActionView(searchItem, searchView);
+        }
 
         for (TextView textView : ViewUtils.findChildrenByClass(searchView, TextView.class)) {
             textView.setTextColor(Color.WHITE);

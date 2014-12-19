@@ -43,7 +43,7 @@
     <string name="sharing_preferences">Compartilhamento</string>
     <string name="appearance_preferences">Aparência</string>
     <string name="title_versesbottom_preference">Números dos versículos no final</string>
-    <string name="title_themes_preference">Esquema de cores da leitura</string>
+    <string name="title_themes_preference">Esquema de cores</string>
     <string name="summary_versesbottom_preference">Com essa opção marcada, os versículos copiados são indicados no final.</string>
     <string name="summary_themes_preference">Seleciona entre o tema padrão (fundo claro) ou invertido, para a leitura.</string>
     <string name="swipe_to_change">Arraste pros lados pra mudar de página!</string>
