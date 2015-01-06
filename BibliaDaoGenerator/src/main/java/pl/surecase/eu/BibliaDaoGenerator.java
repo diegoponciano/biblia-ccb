@@ -8,9 +8,10 @@ public class BibliaDaoGenerator {
 
     public static void main(String args[]) throws Exception {
         Schema schema = new Schema(3, "greendao");
+
         Entity verses = schema.addEntity("Verse");
         verses.setTableName("verses");
-        verses.addIdProperty();
+        verses.addIdProperty().columnName("_rowid_");
         verses.addIntProperty("chapter");
         verses.addIntProperty("verse");
         verses.addStringProperty("book");
@@ -19,8 +20,8 @@ public class BibliaDaoGenerator {
         verses.addStringProperty("text");
 
         Entity books = schema.addEntity("Book");
+        books.addLongProperty("ordering").primaryKey().unique();
         books.setTableName("books");
-        books.addIdProperty();
         books.addStringProperty("name");
         books.addStringProperty("abbreviation");
         books.addStringProperty("testament");

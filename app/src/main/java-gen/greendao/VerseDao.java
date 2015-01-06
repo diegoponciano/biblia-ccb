@@ -23,7 +23,7 @@ public class VerseDao extends AbstractDao<Verse, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_rowid_");
         public final static Property Chapter = new Property(1, Integer.class, "chapter", false, "CHAPTER");
         public final static Property Verse = new Property(2, Integer.class, "verse", false, "VERSE");
         public final static Property Book = new Property(3, String.class, "book", false, "BOOK");
@@ -45,7 +45,7 @@ public class VerseDao extends AbstractDao<Verse, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'verses' (" + //
-                "'_id' INTEGER PRIMARY KEY ," + // 0: id
+                "'_rowid_' INTEGER PRIMARY KEY ," + // 0: id
                 "'CHAPTER' INTEGER," + // 1: chapter
                 "'VERSE' INTEGER," + // 2: verse
                 "'BOOK' TEXT," + // 3: book

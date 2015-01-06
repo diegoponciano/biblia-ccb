@@ -6,7 +6,7 @@ package greendao;
  */
 public class Book {
 
-    private Long id;
+    private Long ordering;
     private String name;
     private String abbreviation;
     private String testament;
@@ -14,23 +14,23 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long id) {
-        this.id = id;
+    public Book(Long ordering) {
+        this.ordering = ordering;
     }
 
-    public Book(Long id, String name, String abbreviation, String testament) {
-        this.id = id;
+    public Book(Long ordering, String name, String abbreviation, String testament) {
+        this.ordering = ordering;
         this.name = name;
         this.abbreviation = abbreviation;
         this.testament = testament;
     }
 
-    public Long getId() {
-        return id;
+    public Long getOrdering() {
+        return ordering;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrdering(Long ordering) {
+        this.ordering = ordering;
     }
 
     public String getName() {
