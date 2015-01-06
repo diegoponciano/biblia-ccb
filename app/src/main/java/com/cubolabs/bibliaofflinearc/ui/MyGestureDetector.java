@@ -18,7 +18,9 @@ public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
     private ListaDeVersiculos listaDeVersiculos;
     private ListaDeLivros listaDeLivros;
 
-    public MyGestureDetector(VersiculosFragment versiculosFragment, ListaDeVersiculos listaDeVersiculos) {
+    public MyGestureDetector(VersiculosFragment versiculosFragment,
+                             ListaDeVersiculos listaDeVersiculos,
+                             ListaDeLivros listaDeLivros) {
         this.versiculosFragment = versiculosFragment;
         this.listaDeVersiculos = listaDeVersiculos;
         this.listaDeLivros = listaDeLivros;

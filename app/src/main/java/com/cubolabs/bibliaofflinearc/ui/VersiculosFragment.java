@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.ListaDeLivros;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import greendao.Verse;
 public class VersiculosFragment extends ListFragment {
     public static final String TAG = VersiculosFragment.class.getSimpleName();
 	private ListaDeVersiculos listaDeVersiculos;
+    private ListaDeLivros listaDeLivros;
     public static final String ARG_BOOK = "livro";
     public static final String ARG_CHAPTER = "capitulo";
     public ActionMode actionMode;
@@ -186,7 +188,8 @@ public class VersiculosFragment extends ListFragment {
                 return true;
             }
         });
-        gestureDetector = new GestureDetector(getActivity(), new MyGestureDetector(this, listaDeVersiculos));
+        gestureDetector = new GestureDetector(getActivity(),
+                new MyGestureDetector(this, listaDeVersiculos, listaDeLivros));
         gestureListener = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return gestureDetector.onTouchEvent(event);
@@ -200,6 +203,7 @@ public class VersiculosFragment extends ListFragment {
         super.onAttach(activity);
         /** Activity is null if not attached **/
         listaDeVersiculos = new ListaDeVersiculos(activity);
+        listaDeLivros = new ListaDeLivros(activity);
     }
 
     @Override
