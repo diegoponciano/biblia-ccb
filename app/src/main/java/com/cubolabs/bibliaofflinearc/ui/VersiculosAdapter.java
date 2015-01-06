@@ -3,8 +3,10 @@ package com.cubolabs.bibliaofflinearc.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -20,22 +22,22 @@ import java.util.ArrayList;
 import greendao.Verse;
 
 public class VersiculosAdapter extends ArrayAdapter<Verse> {
-    private final ArrayList<Verse> versiculos;
+    private final ArrayList<Verse> verses;
     private final int capitulo;
     private final int versesSize;
     private final Context context;
 
-    public VersiculosAdapter(Context context, ArrayList<Verse> versiculos, int capitulo) {
+    public VersiculosAdapter(Context context, ArrayList<Verse> verses, int capitulo) {
         super(context,
                 (ViewUtils.AboveHoneycomb() ?
                 R.layout.versiculo_hc_item_1:
                 R.layout.versiculo_checked), //android.R.layout.simple_list_item_checked
                 android.R.id.text1,
-                versiculos);
-        this.versiculos = versiculos;
+                verses);
+        this.verses = verses;
         this.capitulo = capitulo;
         this.context = context;
-        this.versesSize = versiculos.size();
+        this.versesSize = verses.size();
     }
 
     @Override
@@ -46,9 +48,9 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
     @Override
     public int getItemViewType(int position) {
         //the result must be in the range 0 to getViewTypeCount() - 1.
-        if (versiculos.get(position).getHeader() != null && position == 0)
+        if (verses.get(position).getHeader() != null && position == 0)
             return 4;
-        else if (versiculos.get(position).getHeader() != null)
+        else if (verses.get(position).getHeader() != null)
             return 3;
         else if(position == 0)
             return 0;
@@ -77,7 +79,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
                     R.layout.versiculo_hc_item_3:
                     R.layout.versiculo_checked_2, parent, false);
             TextView hint = (TextView) view.findViewById(android.R.id.text2);
-            hint.setText(versiculos.get(position).getHeader());
+            hint.setText(verses.get(position).getHeader());
         }
         else
            view = super.getView(position, convertView, parent);
@@ -97,7 +99,8 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
             indiceStyle = new StyleSpan(Typeface.BOLD);
         }
 
-        spanText = new SpannableString(" "+indice+"  "+versiculos.get(position).getText());
+        Spanned span = Html.fromHtml("&nbsp;"+indice+"&nbsp;&nbsp;"+verses.get(position).getText());
+        spanText = new SpannableString(span);
         spanText.setSpan(indiceStyle, 1, 1+indice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         versiculoText.setText(spanText, TextView.BufferType.SPANNABLE);
 
