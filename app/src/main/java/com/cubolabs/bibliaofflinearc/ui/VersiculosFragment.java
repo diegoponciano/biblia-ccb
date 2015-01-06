@@ -23,10 +23,11 @@ import android.widget.ListView;
 
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
-import com.cubolabs.bibliaofflinearc.data.Palavra;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import greendao.Verse;
 
 public class VersiculosFragment extends ListFragment {
     public static final String TAG = VersiculosFragment.class.getSimpleName();
@@ -146,7 +147,7 @@ public class VersiculosFragment extends ListFragment {
 
         final int capitulo = getArguments().getInt(ARG_CHAPTER);
         final String livro = getArguments().getString(ARG_BOOK);
-        final ArrayList<Palavra> versiculos = listaDeVersiculos.PorLivroECapitulo(livro, capitulo);
+        final ArrayList<Verse> versiculos = listaDeVersiculos.PorLivroECapitulo(livro, capitulo);
 
         final ArrayAdapter adapter = new VersiculosAdapter(getActivity(), versiculos, capitulo);
         setListAdapter(adapter);

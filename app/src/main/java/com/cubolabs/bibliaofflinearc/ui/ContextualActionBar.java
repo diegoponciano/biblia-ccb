@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.view.ActionMode;
 import android.text.Html;
 import android.util.Log;
@@ -19,7 +18,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.cubolabs.bibliaofflinearc.R;
-import com.cubolabs.bibliaofflinearc.data.Palavra;
+
+import greendao.Verse;
 
 public class ContextualActionBar implements ActionMode.Callback {
     private VersiculosFragment versiculosFragment;
@@ -42,13 +42,13 @@ public class ContextualActionBar implements ActionMode.Callback {
         SparseBooleanArray checked = versiculosFragment.getListView().getCheckedItemPositions();
         for (int i = 0; i < len; i++){
             if (checked.get(i)) {
-                Palavra palavra = (Palavra) versiculosFragment.getListAdapter().getItem(i);
+                Verse verse = (Verse) versiculosFragment.getListAdapter().getItem(i);
                 if(!versesBottom)
                     versesToShare.append(" " + String.valueOf(i+1) + ". ");
                 else
                     versesToShare.append(" ");
 
-                versesToShare.append(palavra.getTexto());
+                versesToShare.append(verse.getText());
                 versesToShare.append("\n");
 
                 if(!versesBottom)
@@ -56,7 +56,7 @@ public class ContextualActionBar implements ActionMode.Callback {
                 else
                     versesToShareHtml.append(" ");
 
-                versesToShareHtml.append(palavra.getTexto());
+                versesToShareHtml.append(verse.getText());
                 versesToShareHtml.append("<br>");
             }
         }

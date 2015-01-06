@@ -7,16 +7,21 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.ListaDeLivros;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
-import com.cubolabs.bibliaofflinearc.data.Palavra;
+
+import greendao.Book;
+import greendao.Verse;
 
 public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
     private VersiculosFragment versiculosFragment;
     private ListaDeVersiculos listaDeVersiculos;
+    private ListaDeLivros listaDeLivros;
 
     public MyGestureDetector(VersiculosFragment versiculosFragment, ListaDeVersiculos listaDeVersiculos) {
         this.versiculosFragment = versiculosFragment;
         this.listaDeVersiculos = listaDeVersiculos;
+        this.listaDeLivros = listaDeLivros;
     }
 
     @Override
@@ -31,12 +36,13 @@ public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
             if(e1.getX() - e2.getX() > VersiculosFragment.SWIPE_MIN_DISTANCE && Math.abs(velocityX) > VersiculosFragment.SWIPE_THRESHOLD_VELOCITY) {
                 //Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
-                Palavra proximo = listaDeVersiculos.ProximoCapitulo(livro, capitulo);
+                Verse proximo = listaDeVersiculos.ProximoCapitulo(livro, capitulo);
                 if (proximo != null) {
 
+                    Book book = listaDeLivros.ByAbbreviation(proximo.getBook());
                     Fragment newFragment = VersiculosFragment.newInstance(
-                            proximo.getLivro().getNome(),
-                            ((int) proximo.getCapitulo())
+                            book.getName(),
+                            proximo.getChapter()
                     );
                     FragmentTransaction transaction = versiculosFragment.getFragmentManager().beginTransaction();
                     transaction.setCustomAnimations(
@@ -52,11 +58,12 @@ public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
                 }
             }  else if (e2.getX() - e1.getX() > VersiculosFragment.SWIPE_MIN_DISTANCE && Math.abs(velocityX) > VersiculosFragment.SWIPE_THRESHOLD_VELOCITY) {
                 //Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
-                Palavra anterior = listaDeVersiculos.CapituloAnterior(livro, capitulo);
+                Verse anterior = listaDeVersiculos.CapituloAnterior(livro, capitulo);
+                Book book = listaDeLivros.ByAbbreviation(anterior.getBook());
                 if (anterior != null) {
                     Fragment newFragment = VersiculosFragment.newInstance(
-                            anterior.getLivro().getNome(),
-                            ((int) anterior.getCapitulo())
+                            book.getName(),
+                            anterior.getChapter()
                     );
                     FragmentTransaction transaction = versiculosFragment.getFragmentManager().beginTransaction();
                     transaction.setCustomAnimations(
