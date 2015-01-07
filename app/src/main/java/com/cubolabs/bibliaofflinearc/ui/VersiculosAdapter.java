@@ -79,7 +79,8 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
                     R.layout.versiculo_hc_item_3:
                     R.layout.versiculo_checked_2, parent, false);
             TextView hint = (TextView) view.findViewById(android.R.id.text2);
-            hint.setText(verses.get(position).getHeader());
+            String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
+            hint.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
         }
         else
            view = super.getView(position, convertView, parent);
@@ -99,7 +100,9 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
             indiceStyle = new StyleSpan(Typeface.BOLD);
         }
 
-        Spanned span = Html.fromHtml("&nbsp;"+indice+"&nbsp;&nbsp;"+verses.get(position).getText());
+        String htmlText = HtmlUtils.SmallCapitalize(verses.get(position).getText());
+
+        Spanned span = Html.fromHtml("&nbsp;"+indice+"&nbsp;&nbsp;"+htmlText);
         spanText = new SpannableString(span);
         spanText.setSpan(indiceStyle, 1, 1+indice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         versiculoText.setText(spanText, TextView.BufferType.SPANNABLE);
