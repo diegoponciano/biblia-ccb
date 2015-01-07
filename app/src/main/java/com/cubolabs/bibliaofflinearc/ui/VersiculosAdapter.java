@@ -42,13 +42,17 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
 
     @Override
     public int getViewTypeCount() {
-        return 5;
+        return 7;
     }
 
     @Override
     public int getItemViewType(int position) {
         //the result must be in the range 0 to getViewTypeCount() - 1.
-        if (verses.get(position).getHeader() != null && position == 0)
+        if (verses.get(position).getHeader() != null && verses.get(position).getSubheader() != null && position == 0)
+            return 6;
+        else if (verses.get(position).getHeader() != null && verses.get(position).getSubheader() != null)
+            return 5;
+        else if (verses.get(position).getHeader() != null && position == 0)
             return 4;
         else if (verses.get(position).getHeader() != null)
             return 3;
@@ -73,14 +77,27 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
             TextView hint = (TextView) view.findViewById(android.R.id.text2);
             hint.setText(R.string.swipe_to_change);
         }
-        if(itemType == 3 | itemType == 4) {
+        else if(itemType == 3 | itemType == 4) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
                     R.layout.versiculo_hc_item_3:
                     R.layout.versiculo_checked_2, parent, false);
-            TextView hint = (TextView) view.findViewById(android.R.id.text2);
+            TextView header = (TextView) view.findViewById(android.R.id.text2);
             String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
-            hint.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
+            header.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
+        }
+        else if(itemType == 5 | itemType == 6) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
+                    R.layout.versiculo_hc_item_4:
+                    R.layout.versiculo_checked_2, parent, false);
+            TextView header = (TextView) view.findViewById(R.id.text3);
+            String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
+            header.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
+            TextView subheader = (TextView) view.findViewById(android.R.id.text2);
+            subheader.setText(
+                    HtmlUtils.Smallcaps(verses.get(position).getSubheader()),
+                    TextView.BufferType.SPANNABLE);
         }
         else
            view = super.getView(position, convertView, parent);
@@ -91,7 +108,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
         SpannableString spanText;
         Object indiceStyle;
 
-        if(itemType == 0 || itemType == 4) {
+        if(itemType == 0 || itemType == 4 || itemType == 6) {
             indice = String.valueOf(capitulo);
             indiceStyle = new RelativeSizeSpan(2f);
         }

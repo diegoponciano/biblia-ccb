@@ -1,5 +1,8 @@
 package com.cubolabs.bibliaofflinearc.ui;
 
+import android.text.Html;
+import android.text.Spanned;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,5 +23,9 @@ public class HtmlUtils {
             el.replaceWith(span);
         }
         return doc.body().html();
+    }
+
+    public static Spanned Smallcaps(String htmlText) {
+        return Html.fromHtml(SmallCapitalize(htmlText));
     }
 }
