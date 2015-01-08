@@ -10,7 +10,7 @@ import greendao.DaoSession;
 public class BibliaDatabase extends SQLiteAssetHelper {
 	//private static final String TAG = SQLiteAssetHelper.class.getSimpleName();
 	private static final String DATABASE_NAME = "biblia_arc.db";
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 10;
     
     private static DaoSession daoSession;
     private static DaoMaster daoMaster;
