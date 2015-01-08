@@ -81,7 +81,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
                     R.layout.versiculo_hc_item_3:
-                    R.layout.versiculo_checked_2, parent, false);
+                    R.layout.versiculo_checked_3, parent, false);
             TextView header = (TextView) view.findViewById(android.R.id.text2);
             String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
             header.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
@@ -90,7 +90,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
                     R.layout.versiculo_hc_item_4:
-                    R.layout.versiculo_checked_2, parent, false);
+                    R.layout.versiculo_checked_4, parent, false);
             TextView header = (TextView) view.findViewById(R.id.text3);
             String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
             header.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
