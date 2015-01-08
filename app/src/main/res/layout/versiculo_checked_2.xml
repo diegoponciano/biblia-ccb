@@ -27,7 +27,7 @@
         android:layout_alignStart="@android:id/text1"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:paddingBottom="4dp"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:textColor="#444"
         android:text="@string/quick_brown_fox"
         android:gravity="center"
