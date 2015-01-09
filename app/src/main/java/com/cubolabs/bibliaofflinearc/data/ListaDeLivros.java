@@ -6,54 +6,65 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
+import greendao.Book;
+import greendao.BookDao;
+import greendao.VerseDao;
+
 public class ListaDeLivros {
 	private BibliaDatabase db;
-    private TestamentoDao testamentoDao;
-	private LivroDao livroDao;
+	private BookDao bookDao;
 
     public ListaDeLivros(Activity activity) {
         db = BibliaDatabase.getInstance(activity);
-        testamentoDao = DaoMaster.getSession(activity).getTestamentoDao();
-        livroDao = DaoMaster.getSession(activity).getLivroDao();
+        bookDao = BibliaDatabase.getSession(activity).getBookDao();
     }
 
-    public List<Livro> Todos() {
-        return livroDao.queryBuilder().build().list();
+    public List<Book> Todos() {
+        return bookDao.queryBuilder().build().list();
     }
 
-	public ArrayList<Integer> Capitulos(String nomeDoLivro) {
-		Livro livro = livroDao.queryBuilder()
-						.where(LivroDao.Properties.Nome.eq(nomeDoLivro))
+    public Book ByAbbreviation(String bookAbbrev)
+    {
+        return bookDao.queryBuilder()
+                .where(BookDao.Properties.Abbreviation.eq(bookAbbrev))
+                .unique();
+    }
+
+	public ArrayList<Integer> Capitulos(String bookName) {
+        Book book = bookDao.queryBuilder()
+						.where(BookDao.Properties.Name.eq(bookName))
                         .unique();
 		
-		String idLivro = livro.getId().toString();
+		String bookAbbreviation = book.getAbbreviation();
 		
-		Cursor cursor = db.getReadableDatabase().query(true, PalavraDao.TABLENAME, 
-				new String[] { PalavraDao.Properties.Capitulo.columnName }, 
-				PalavraDao.Properties.Id_livro.columnName + "=?",
-				new String[] { idLivro }, 
-				PalavraDao.Properties.Capitulo.columnName, null, null, null);
+		Cursor cursor = db.getReadableDatabase().query(true, VerseDao.TABLENAME,
+				new String[] { VerseDao.Properties.Chapter.columnName },
+                VerseDao.Properties.Book.columnName + "=?",
+				new String[] { bookAbbreviation },
+                VerseDao.Properties.Chapter.columnName, null, null, null);
 		
-		ArrayList<Integer> numerosCapitulos = new ArrayList<Integer>();
+		ArrayList<Integer> chapterNumbers = new ArrayList<Integer>();
 		
 		for(int i=1; i<= cursor.getCount(); i++) {
-			numerosCapitulos.add(i);
+            chapterNumbers.add(i);
 		}
         cursor.close();
 		
-		return numerosCapitulos;
+		return chapterNumbers;
 	}
 
     public ArrayList<String> NomesVelhoTestamento() {
-        Long velhoTestamentoId = testamentoDao.queryBuilder()
-                                    .where(TestamentoDao.Properties.Nome.eq("Velho Testamento"))
-                                    .unique()
-                                    .getId();
-        List<Livro> livros = livroDao.queryBuilder()
-                                .where(LivroDao.Properties.Id_testamento.eq(velhoTestamentoId))
+        List<Book> books = bookDao.queryBuilder()
+                                .where(BookDao.Properties.Testament.eq("ot"))
                                 .list();
+        return this.ListaNomes(books);
+    }
 
-        return this.ListaNomes(livros);
+    public ArrayList<String> NomesNovoTestamento() {
+        List<Book> books = bookDao.queryBuilder()
+                .where(BookDao.Properties.Testament.eq("nt"))
+                .list();
+        return this.ListaNomes(books);
     }
 
     private ArrayList<String> NomesHorizontal(ArrayList<String> nomes){
@@ -77,18 +88,6 @@ public class ListaDeLivros {
         return this.NomesHorizontal(this.NomesVelhoTestamento());
     }
 
-    public ArrayList<String> NomesNovoTestamento() {
-        Long novoTestamentoId = testamentoDao.queryBuilder()
-                .where(TestamentoDao.Properties.Nome.eq("Novo Testamento"))
-                .unique()
-                .getId();
-        List<Livro> livros = livroDao.queryBuilder()
-                .where(LivroDao.Properties.Id_testamento.eq(novoTestamentoId))
-                .list();
-
-        return this.ListaNomes(livros);
-    }
-
     public ArrayList<String> NomesNovoTestamentoHorizontal() {
         return this.NomesHorizontal(this.NomesNovoTestamento());
     }
@@ -97,13 +96,13 @@ public class ListaDeLivros {
         return this.ListaNomes(this.Todos());
 	}
 
-    private ArrayList<String> ListaNomes(List<Livro> livros) {
-        final ArrayList<String> listaDeNomes = new ArrayList<String>();
+    private ArrayList<String> ListaNomes(List<Book> books) {
+        final ArrayList<String> nameList = new ArrayList<String>();
 
-        for (int i = 0; i < livros.size(); ++i) {
-            listaDeNomes.add(livros.get(i).getNome());
+        for (int i = 0; i < books.size(); ++i) {
+            nameList.add(books.get(i).getName());
         }
 
-        return listaDeNomes;
+        return nameList;
     }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/text3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center_vertical"
+        android:paddingLeft="6dp"
+        android:paddingRight="2dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:minHeight="48dip"
+        android:text="@string/quick_brown_fox"
+        />
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@android:id/text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:paddingLeft="6dp"
+        android:paddingRight="2dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:minHeight="48dip"
+        android:text="@string/quick_brown_fox"
+        />
+    <CheckedTextView android:id="@android:id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@android:id/text2"
+        android:layout_alignLeft="@android:id/text2"
+        android:layout_alignStart="@android:id/text2"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:text="@string/quick_brown_fox"
+        />
+</LinearLayout>

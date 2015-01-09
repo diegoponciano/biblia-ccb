@@ -3,9 +3,10 @@ package com.cubolabs.bibliaofflinearc.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Build;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -15,40 +16,45 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.cubolabs.bibliaofflinearc.R;
-import com.cubolabs.bibliaofflinearc.data.Palavra;
 
 import java.util.ArrayList;
 
-public class VersiculosAdapter extends ArrayAdapter<Palavra> {
-    private final ArrayList<Palavra> versiculos;
+import greendao.Verse;
+
+public class VersiculosAdapter extends ArrayAdapter<Verse> {
+    private final ArrayList<Verse> verses;
     private final int capitulo;
     private final int versesSize;
     private final Context context;
 
-    public VersiculosAdapter(Context context, ArrayList<Palavra> versiculos, int capitulo) {
+    public VersiculosAdapter(Context context, ArrayList<Verse> verses, int capitulo) {
         super(context,
                 (ViewUtils.AboveHoneycomb() ?
                 R.layout.versiculo_hc_item_1:
                 R.layout.versiculo_checked), //android.R.layout.simple_list_item_checked
                 android.R.id.text1,
-                versiculos);
-        this.versiculos = versiculos;
+                verses);
+        this.verses = verses;
         this.capitulo = capitulo;
         this.context = context;
-        this.versesSize = versiculos.size();
+        this.versesSize = verses.size();
     }
 
     @Override
     public int getViewTypeCount() {
-        return 5;
+        return 7;
     }
 
     @Override
     public int getItemViewType(int position) {
         //the result must be in the range 0 to getViewTypeCount() - 1.
-        if (versiculos.get(position).getCabecalho() != null && position == 0)
+        if (verses.get(position).getHeader() != null && verses.get(position).getSubheader() != null && position == 0)
+            return 6;
+        else if (verses.get(position).getHeader() != null && verses.get(position).getSubheader() != null)
+            return 5;
+        else if (verses.get(position).getHeader() != null && position == 0)
             return 4;
-        else if (versiculos.get(position).getCabecalho() != null)
+        else if (verses.get(position).getHeader() != null)
             return 3;
         else if(position == 0)
             return 0;
@@ -71,13 +77,27 @@ public class VersiculosAdapter extends ArrayAdapter<Palavra> {
             TextView hint = (TextView) view.findViewById(android.R.id.text2);
             hint.setText(R.string.swipe_to_change);
         }
-        if(itemType == 3 | itemType == 4) {
+        else if(itemType == 3 | itemType == 4) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
                     R.layout.versiculo_hc_item_3:
-                    R.layout.versiculo_checked_2, parent, false);
-            TextView hint = (TextView) view.findViewById(android.R.id.text2);
-            hint.setText(versiculos.get(position).getCabecalho());
+                    R.layout.versiculo_checked_3, parent, false);
+            TextView header = (TextView) view.findViewById(android.R.id.text2);
+            String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
+            header.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
+        }
+        else if(itemType == 5 | itemType == 6) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
+                    R.layout.versiculo_hc_item_4:
+                    R.layout.versiculo_checked_4, parent, false);
+            TextView header = (TextView) view.findViewById(R.id.text3);
+            String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
+            header.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
+            TextView subheader = (TextView) view.findViewById(android.R.id.text2);
+            subheader.setText(
+                    HtmlUtils.Smallcaps(verses.get(position).getSubheader()),
+                    TextView.BufferType.SPANNABLE);
         }
         else
            view = super.getView(position, convertView, parent);
@@ -88,7 +108,7 @@ public class VersiculosAdapter extends ArrayAdapter<Palavra> {
         SpannableString spanText;
         Object indiceStyle;
 
-        if(itemType == 0 || itemType == 4) {
+        if(itemType == 0 || itemType == 4 || itemType == 6) {
             indice = String.valueOf(capitulo);
             indiceStyle = new RelativeSizeSpan(2f);
         }
@@ -97,7 +117,10 @@ public class VersiculosAdapter extends ArrayAdapter<Palavra> {
             indiceStyle = new StyleSpan(Typeface.BOLD);
         }
 
-        spanText = new SpannableString(" "+indice+"  "+versiculos.get(position).getTexto());
+        String htmlText = HtmlUtils.SmallCapitalize(verses.get(position).getText());
+
+        Spanned span = Html.fromHtml("&nbsp;"+indice+"&nbsp;&nbsp;"+htmlText);
+        spanText = new SpannableString(span);
         spanText.setSpan(indiceStyle, 1, 1+indice.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         versiculoText.setText(spanText, TextView.BufferType.SPANNABLE);
 

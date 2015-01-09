@@ -22,3 +22,8 @@
 -dontwarn android.support.v7.**
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
+-dontwarn freemarker.**
+
+-keeppackagenames org.jsoup.nodes
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable

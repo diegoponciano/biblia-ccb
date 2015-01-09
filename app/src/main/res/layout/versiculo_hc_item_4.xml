@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<TwoLineListItem xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingTop="2dip"
     android:paddingBottom="2dip"
     android:layout_width="match_parent"
@@ -24,7 +24,7 @@
     android:mode="twoLine"
     >
 
-    <TextView android:id="@android:id/text2"
+    <TextView android:id="@+id/text3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -33,6 +33,23 @@
         android:minHeight="40dip"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/quick_brown_fox"
+        android:textAlignment="gravity" />
+
+    <TextView android:id="@android:id/text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text3"
+        android:layout_alignLeft="@+id/text3"
+        android:layout_alignStart="@+id/text3"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
+        android:gravity="center_horizontal|left"
+        android:background="?android:attr/activatedBackgroundIndicator"
+        android:minHeight="30dip"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
         android:paddingRight="10dp"
         android:text="@string/quick_brown_fox"
         android:textAlignment="gravity" />
@@ -52,4 +69,4 @@
         android:text="@string/quick_brown_fox"
         />
 
-</TwoLineListItem>
+</RelativeLayout>

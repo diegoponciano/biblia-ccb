@@ -8,12 +8,13 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/BibliaDaoGenerator" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
       </GradleProjectSettings>
     </option>
-    <option name="gradleVmOptions" value="-Xmx512m" />
+    <option name="gradleVmOptions" value="-Xms128m -Xmx512m" />
   </component>
 </project>
 

@@ -17,12 +17,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.cubolabs.bibliaofflinearc.ui.EditPreferences;
 import com.cubolabs.bibliaofflinearc.ui.EditPreferencesHC;
 import com.cubolabs.bibliaofflinearc.ui.LivrosListFragment;
 import com.cubolabs.bibliaofflinearc.ui.MyMessageBox;
 import com.cubolabs.bibliaofflinearc.ui.SearchResultsPopup;
 import com.cubolabs.bibliaofflinearc.ui.ViewUtils;
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
     private SearchView searchView;
@@ -45,6 +47,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 	 	try {
             preferences = PreferenceManager.getDefaultSharedPreferences(this);

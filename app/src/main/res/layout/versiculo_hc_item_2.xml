@@ -35,6 +35,7 @@
         android:paddingTop="0dp"
         android:paddingRight="2dp"
         android:paddingBottom="4dp"
+        android:text="@string/quick_brown_fox"
         />
 
     <TextView android:id="@android:id/text2"
@@ -46,6 +47,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:gravity="center_horizontal"
         android:textColor="#444"
+        android:text="@string/quick_brown_fox"
         />
 
 </TwoLineListItem>

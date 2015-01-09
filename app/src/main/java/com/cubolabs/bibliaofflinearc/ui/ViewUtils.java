@@ -12,6 +12,7 @@ public class ViewUtils {
         return gatherChildrenByClass(viewGroup, clazz, new ArrayList<V>());
     }
 
+    @SuppressWarnings("unchecked")
     private static <V extends View> Collection<V> gatherChildrenByClass(ViewGroup viewGroup, Class<V> clazz, Collection<V> childrenFound) {
         for (int i = 0; i < viewGroup.getChildCount(); i++)
         {

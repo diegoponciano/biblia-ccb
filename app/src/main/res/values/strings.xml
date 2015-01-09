@@ -2,7 +2,7 @@
 <resources>
     <string name="quick_brown_fox">The quick brown fox jumps over the lazy dog\'s back.</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
-    <string name="app_name">Bíblia ARC - CCB</string>
+    <string name="app_name">Bíblia CCB</string>
     <string name="app_title">Bíblia</string>
     <string name="title_section1">Bíblia</string>
     <string name="title_section2">Verso do dia</string>

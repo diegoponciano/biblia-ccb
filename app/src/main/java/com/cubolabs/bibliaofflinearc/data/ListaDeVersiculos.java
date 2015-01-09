@@ -6,38 +6,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
+import greendao.Book;
+import greendao.BookDao;
+import greendao.Verse;
+import greendao.VerseDao;
 
 public class ListaDeVersiculos {
-	private LivroDao livroDao;
-	private PalavraDao palavraDao;
-	
+    private VerseDao verseDao;
+    private BookDao bookDao;
+
 	public ListaDeVersiculos(Activity activity) {
-        livroDao = DaoMaster.getSession(activity).getLivroDao();
-        palavraDao = DaoMaster.getSession(activity).getPalavraDao();
+        bookDao = BibliaDatabase.getSession(activity).getBookDao();
+        verseDao = BibliaDatabase.getSession(activity).getVerseDao();
     }
 
-    public ArrayList<Palavra> PorLivroECapitulo(String nomeDoLivro, int capitulo) {
-        Livro livro = livroDao.queryBuilder()
-                .where(LivroDao.Properties.Nome.eq(nomeDoLivro)).unique();
+    public ArrayList<Verse> PorLivroECapitulo(String nomeDoLivro, int capitulo) {
+        Book book = bookDao.queryBuilder()
+                .where(BookDao.Properties.Name.eq(nomeDoLivro)).unique();
 
-        QueryBuilder<Palavra> pqb = palavraDao.queryBuilder();
-        List<Palavra> versiculos = pqb.where(pqb.and(
-                        PalavraDao.Properties.Id_livro.eq(livro.getId()),
-                        PalavraDao.Properties.Capitulo.eq(capitulo))
+        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
+        List<Verse> verses = pqb.where(pqb.and(
+                        VerseDao.Properties.Book.eq(book.getAbbreviation()),
+                        VerseDao.Properties.Chapter.eq(capitulo))
         )
-                .orderAsc(PalavraDao.Properties.Versiculo)
+                .orderAsc(VerseDao.Properties.Verse)
                 .list();
 
-        return new ArrayList<Palavra>(versiculos);
+        return new ArrayList<>(verses);
     }
 
 	public ArrayList<String> PorCapitulo(String nomeDoLivro, int capitulo) {
-        ArrayList<Palavra> versiculos = this.PorLivroECapitulo(nomeDoLivro, capitulo);
+        ArrayList<Verse> verses = this.PorLivroECapitulo(nomeDoLivro, capitulo);
 		
 		final ArrayList<String> listaDeNomes = new ArrayList<String>();
 		
-        for (int i = 0; i < versiculos.size(); ++i) {
-            listaDeNomes.add(versiculos.get(i).getTexto());
+        for (int i = 0; i < verses.size(); ++i) {
+            listaDeNomes.add(verses.get(i).getText());
         }
         
         return listaDeNomes;
@@ -45,20 +49,22 @@ public class ListaDeVersiculos {
 
     public ArrayList<String> Busca(String s) {
         s = "%" + s + "%";
-        QueryBuilder<Palavra> pqb = palavraDao.queryBuilder();
-        List<Palavra> versiculos = pqb.where(pqb.or(PalavraDao.Properties.Texto.like(s),
-                                                    PalavraDao.Properties.Cabecalho.like(s)))
-                                       .orderAsc(PalavraDao.Properties.Id_livro)
+        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
+        List<Verse> verses = pqb.where(pqb.or(VerseDao.Properties.Text.like(s),
+                                                    VerseDao.Properties.Header.like(s)))
+                                       .orderAsc(VerseDao.Properties.Id)
                                        .list();
 
         final ArrayList<String> listaDeVersos = new ArrayList<String>();
 
-        for (int i = 0; i < versiculos.size(); ++i) {
-            String fullVerse = versiculos.get(i).getTexto() + "=>";
+        for (int i = 0; i < verses.size(); ++i) {
+            String fullVerse = verses.get(i).getText() + "=>";
 
-            fullVerse += versiculos.get(i).getLivro().getNome();
-            fullVerse += ", " + versiculos.get(i).getCapitulo();
-            fullVerse += ":" + versiculos.get(i).getVersiculo();
+            Book book = bookDao.queryBuilder()
+                    .where(BookDao.Properties.Abbreviation.eq(verses.get(i).getBook())).unique();
+            fullVerse += book.getName();
+            fullVerse += ", " + verses.get(i).getChapter();
+            fullVerse += ":" + verses.get(i).getVerse();
 
             listaDeVersos.add(fullVerse);
         }
@@ -66,50 +72,54 @@ public class ListaDeVersiculos {
         return listaDeVersos;
     }
 
-    public Palavra ProximoCapitulo(String nomeDoLivro, int capitulo) {
-        Palavra proximoCapitulo = null;
+    public Verse ProximoCapitulo(String nomeDoLivro, int capitulo) {
+        Verse proximoCapitulo;
 
-        Livro livro = livroDao.queryBuilder()
-                .where(LivroDao.Properties.Nome.eq(nomeDoLivro)).unique();
+        Book book = bookDao.queryBuilder()
+                .where(BookDao.Properties.Name.eq(nomeDoLivro)).unique();
 
-        QueryBuilder<Palavra> pqb = palavraDao.queryBuilder();
+        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
 
         proximoCapitulo = pqb.where(pqb.and(
-                PalavraDao.Properties.Id_livro.eq(livro.getId()),
-                PalavraDao.Properties.Capitulo.eq(capitulo+1)),
-                PalavraDao.Properties.Versiculo.eq(1))
+                VerseDao.Properties.Book.eq(book.getAbbreviation()),
+                VerseDao.Properties.Chapter.eq(capitulo+1)),
+                VerseDao.Properties.Verse.eq(1))
                 .unique();
         if (proximoCapitulo == null) {
-            pqb = palavraDao.queryBuilder();
+            Book nextBook = bookDao.queryBuilder()
+                    .where(BookDao.Properties.Ordering.eq(capitulo-1)).unique();
+            pqb = verseDao.queryBuilder();
             proximoCapitulo = pqb.where(pqb.and(
-                    PalavraDao.Properties.Id_livro.eq(livro.getId()+1),
-                    PalavraDao.Properties.Capitulo.eq(1),
-                    PalavraDao.Properties.Versiculo.eq(1)))
+                    VerseDao.Properties.Book.eq(nextBook.getAbbreviation()),
+                    VerseDao.Properties.Chapter.eq(1),
+                    VerseDao.Properties.Verse.eq(1)))
                     .unique();
         }
 
         return proximoCapitulo;
     }
 
-    public Palavra CapituloAnterior(String nomeDoLivro, int capitulo) {
-        Palavra capituloAnterior = null;
+    public Verse CapituloAnterior(String nomeDoLivro, int capitulo) {
+        Verse capituloAnterior;
 
-        Livro livro = livroDao.queryBuilder()
-                .where(LivroDao.Properties.Nome.eq(nomeDoLivro)).unique();
+        Book book = bookDao.queryBuilder()
+                .where(BookDao.Properties.Name.eq(nomeDoLivro)).unique();
 
-        QueryBuilder<Palavra> pqb = palavraDao.queryBuilder();
+        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
 
         capituloAnterior = pqb.where(pqb.and(
-                        PalavraDao.Properties.Id_livro.eq(livro.getId()),
-                        PalavraDao.Properties.Capitulo.eq(capitulo-1)),
-                PalavraDao.Properties.Versiculo.eq(1))
-                .unique();
+                        VerseDao.Properties.Book.eq(book.getAbbreviation()),
+                        VerseDao.Properties.Chapter.eq(capitulo-1)),
+                        VerseDao.Properties.Verse.eq(1))
+                        .unique();
         if (capituloAnterior == null) {
-            pqb = palavraDao.queryBuilder();
+            Book previousBook = bookDao.queryBuilder()
+                    .where(BookDao.Properties.Ordering.eq(capitulo-1)).unique();
+            pqb = verseDao.queryBuilder();
             capituloAnterior = pqb.where(pqb.and(
-                    PalavraDao.Properties.Id_livro.eq(livro.getId()-1),
-                    PalavraDao.Properties.Capitulo.eq(1),
-                    PalavraDao.Properties.Versiculo.eq(1)))
+                    VerseDao.Properties.Book.eq(previousBook.getAbbreviation()),
+                    VerseDao.Properties.Chapter.eq(1),
+                    VerseDao.Properties.Verse.eq(1)))
                     .unique();
         }
 
