@@ -20,7 +20,7 @@ public class BibliaDaoGenerator {
         verses.addStringProperty("text");
 
         Entity books = schema.addEntity("Book");
-        books.addLongProperty("ordering").primaryKey().unique();
+        books.addLongProperty("indice").primaryKey().unique();
         books.setTableName("books");
         books.addStringProperty("name");
         books.addStringProperty("abbreviation");

@@ -40,7 +40,6 @@ public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
                 //Toast.makeText(getActivity(), "Left Swipe", Toast.LENGTH_SHORT).show();
                 Verse proximo = listaDeVersiculos.ProximoCapitulo(livro, capitulo);
                 if (proximo != null) {
-
                     Book book = listaDeLivros.ByAbbreviation(proximo.getBook());
                     Fragment newFragment = VersiculosFragment.newInstance(
                             book.getName(),
@@ -61,8 +60,8 @@ public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
             }  else if (e2.getX() - e1.getX() > VersiculosFragment.SWIPE_MIN_DISTANCE && Math.abs(velocityX) > VersiculosFragment.SWIPE_THRESHOLD_VELOCITY) {
                 //Toast.makeText(getActivity(), "Right Swipe", Toast.LENGTH_SHORT).show();
                 Verse anterior = listaDeVersiculos.CapituloAnterior(livro, capitulo);
-                Book book = listaDeLivros.ByAbbreviation(anterior.getBook());
                 if (anterior != null) {
+                    Book book = listaDeLivros.ByAbbreviation(anterior.getBook());
                     Fragment newFragment = VersiculosFragment.newInstance(
                             book.getName(),
                             anterior.getChapter()
@@ -81,7 +80,7 @@ public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
                 }
             }
         } catch (Exception e) {
-            Log.d("MyGestureDetector.onFling", e.getMessage());
+            Log.d("GestureDetector.onFling", e.getLocalizedMessage());
             // nothing
         }
         return false;

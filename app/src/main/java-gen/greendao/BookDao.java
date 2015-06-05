@@ -23,7 +23,7 @@ public class BookDao extends AbstractDao<Book, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Ordering = new Property(0, Long.class, "ordering", true, "ORDERING");
+        public final static Property Indice = new Property(0, Long.class, "indice", true, "INDICE");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
         public final static Property Abbreviation = new Property(2, String.class, "abbreviation", false, "ABBREVIATION");
         public final static Property Testament = new Property(3, String.class, "testament", false, "TESTAMENT");
@@ -42,7 +42,7 @@ public class BookDao extends AbstractDao<Book, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'books' (" + //
-                "'ORDERING' INTEGER PRIMARY KEY UNIQUE ," + // 0: ordering
+                "'INDICE' INTEGER PRIMARY KEY UNIQUE ," + // 0: indice
                 "'NAME' TEXT," + // 1: name
                 "'ABBREVIATION' TEXT," + // 2: abbreviation
                 "'TESTAMENT' TEXT);"); // 3: testament
@@ -59,9 +59,9 @@ public class BookDao extends AbstractDao<Book, Long> {
     protected void bindValues(SQLiteStatement stmt, Book entity) {
         stmt.clearBindings();
  
-        Long ordering = entity.getOrdering();
-        if (ordering != null) {
-            stmt.bindLong(1, ordering);
+        Long indice = entity.getIndice();
+        if (indice != null) {
+            stmt.bindLong(1, indice);
         }
  
         String name = entity.getName();
@@ -90,7 +90,7 @@ public class BookDao extends AbstractDao<Book, Long> {
     @Override
     public Book readEntity(Cursor cursor, int offset) {
         Book entity = new Book( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // ordering
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // indice
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // abbreviation
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // testament
@@ -101,7 +101,7 @@ public class BookDao extends AbstractDao<Book, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Book entity, int offset) {
-        entity.setOrdering(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setIndice(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAbbreviation(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setTestament(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -110,7 +110,7 @@ public class BookDao extends AbstractDao<Book, Long> {
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(Book entity, long rowId) {
-        entity.setOrdering(rowId);
+        entity.setIndice(rowId);
         return rowId;
     }
     
@@ -118,7 +118,7 @@ public class BookDao extends AbstractDao<Book, Long> {
     @Override
     public Long getKey(Book entity) {
         if(entity != null) {
-            return entity.getOrdering();
+            return entity.getIndice();
         } else {
             return null;
         }

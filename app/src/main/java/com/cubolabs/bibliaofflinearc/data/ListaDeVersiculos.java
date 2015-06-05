@@ -72,28 +72,40 @@ public class ListaDeVersiculos {
         return listaDeVersos;
     }
 
+    public Verse UltimoCapitulo(String livroSigla) {
+        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
+        return pqb
+                .where(VerseDao.Properties.Book.eq(livroSigla))
+                .orderDesc(VerseDao.Properties.Chapter).limit(1).unique();
+    }
+
     public Verse ProximoCapitulo(String nomeDoLivro, int capitulo) {
-        Verse proximoCapitulo;
+        Verse proximoCapitulo = null;
 
         Book book = bookDao.queryBuilder()
                 .where(BookDao.Properties.Name.eq(nomeDoLivro)).unique();
 
-        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
+        Verse ultimo = UltimoCapitulo(book.getAbbreviation());
 
-        proximoCapitulo = pqb.where(pqb.and(
-                VerseDao.Properties.Book.eq(book.getAbbreviation()),
-                VerseDao.Properties.Chapter.eq(capitulo+1)),
-                VerseDao.Properties.Verse.eq(1))
-                .unique();
-        if (proximoCapitulo == null) {
-            Book nextBook = bookDao.queryBuilder()
-                    .where(BookDao.Properties.Ordering.eq(capitulo-1)).unique();
-            pqb = verseDao.queryBuilder();
+        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
+        if (capitulo < ultimo.getChapter()) {
             proximoCapitulo = pqb.where(pqb.and(
-                    VerseDao.Properties.Book.eq(nextBook.getAbbreviation()),
-                    VerseDao.Properties.Chapter.eq(1),
-                    VerseDao.Properties.Verse.eq(1)))
-                    .unique();
+                                        VerseDao.Properties.Book.eq(book.getAbbreviation()),
+                                        VerseDao.Properties.Chapter.eq(capitulo+1)),
+                                        VerseDao.Properties.Verse.eq(1))
+                                        .unique();
+        }
+        else {
+            Book nextBook = bookDao.queryBuilder()
+                    .where(BookDao.Properties.Indice.eq(book.getIndice()+1)).unique();
+            pqb = verseDao.queryBuilder();
+            if (nextBook != null) {
+                proximoCapitulo = pqb.where(pqb.and(
+                        VerseDao.Properties.Book.eq(nextBook.getAbbreviation()),
+                        VerseDao.Properties.Chapter.eq(1),
+                        VerseDao.Properties.Verse.eq(1)))
+                        .unique();
+            }
         }
 
         return proximoCapitulo;
@@ -112,13 +124,17 @@ public class ListaDeVersiculos {
                         VerseDao.Properties.Chapter.eq(capitulo-1)),
                         VerseDao.Properties.Verse.eq(1))
                         .unique();
-        if (capituloAnterior == null) {
+
+        if (capituloAnterior == null && book.getIndice() > 1) {
             Book previousBook = bookDao.queryBuilder()
-                    .where(BookDao.Properties.Ordering.eq(capitulo-1)).unique();
+                    .where(BookDao.Properties.Indice.eq(book.getIndice()-1)).unique();
+
             pqb = verseDao.queryBuilder();
+            Verse ultimo = UltimoCapitulo(previousBook.getAbbreviation());
+
             capituloAnterior = pqb.where(pqb.and(
                     VerseDao.Properties.Book.eq(previousBook.getAbbreviation()),
-                    VerseDao.Properties.Chapter.eq(1),
+                    VerseDao.Properties.Chapter.eq(ultimo.getChapter()),
                     VerseDao.Properties.Verse.eq(1)))
                     .unique();
         }

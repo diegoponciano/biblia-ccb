@@ -6,7 +6,7 @@ package greendao;
  */
 public class Book {
 
-    private Long ordering;
+    private Long indice;
     private String name;
     private String abbreviation;
     private String testament;
@@ -14,23 +14,23 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long ordering) {
-        this.ordering = ordering;
+    public Book(Long indice) {
+        this.indice = indice;
     }
 
-    public Book(Long ordering, String name, String abbreviation, String testament) {
-        this.ordering = ordering;
+    public Book(Long indice, String name, String abbreviation, String testament) {
+        this.indice = indice;
         this.name = name;
         this.abbreviation = abbreviation;
         this.testament = testament;
     }
 
-    public Long getOrdering() {
-        return ordering;
+    public Long getIndice() {
+        return indice;
     }
 
-    public void setOrdering(Long ordering) {
-        this.ordering = ordering;
+    public void setIndice(Long indice) {
+        this.indice = indice;
     }
 
     public String getName() {
