@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -133,7 +134,7 @@ public class SearchResultsPopup {
 
                 // visual settings for the list item
                 TextView v = (TextView) row.findViewById(android.R.id.text1);
-                v.setText(verseText);
+                v.setText(Html.fromHtml(verseText), TextView.BufferType.SPANNABLE);
                 v.setTextSize(16);
                 v.setPadding(10, 10, 10, 10);
                 v.setTextColor(Color.WHITE);
