@@ -18,8 +18,11 @@ import android.widget.TextView;
 import com.cubolabs.bibliaofflinearc.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import greendao.Verse;
+
+
 
 public class VersiculosAdapter extends ArrayAdapter<Verse> {
     private final ArrayList<Verse> verses;
@@ -49,19 +52,19 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
     public int getItemViewType(int position) {
         //the result must be in the range 0 to getViewTypeCount() - 1.
         if (verses.get(position).getHeader() != null && verses.get(position).getSubheader() != null && position == 0)
-            return 6;
+            return LINE.SUBHEADER_FIRST;
         else if (verses.get(position).getHeader() != null && verses.get(position).getSubheader() != null)
-            return 5;
+            return LINE.SUBHEADER;
         else if (verses.get(position).getHeader() != null && position == 0)
-            return 4;
+            return LINE.HEADER_FIRST;
         else if (verses.get(position).getHeader() != null)
-            return 3;
+            return LINE.HEADER;
         else if(position == 0)
-            return 0;
+            return LINE.FIRST;
         else if (position < versesSize-1)
             return 1;
         else
-            return 2;
+            return LINE.FOOTER;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
         int itemType = getItemViewType(position);
 
         View view;
-        if(itemType == 2) {
+        if(itemType == LINE.FOOTER) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
                 R.layout.versiculo_hc_item_2:
@@ -77,7 +80,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
             TextView hint = (TextView) view.findViewById(android.R.id.text2);
             hint.setText(R.string.swipe_to_change);
         }
-        else if(itemType == 3 | itemType == 4) {
+        else if(itemType == LINE.HEADER || itemType == LINE.HEADER_FIRST) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
                     R.layout.versiculo_hc_item_3:
@@ -86,7 +89,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
             String headerText = HtmlUtils.SmallCapitalize(verses.get(position).getHeader());
             header.setText(Html.fromHtml(headerText), TextView.BufferType.SPANNABLE);
         }
-        else if(itemType == 5 | itemType == 6) {
+        else if(itemType == LINE.SUBHEADER || itemType == LINE.SUBHEADER_FIRST) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(ViewUtils.AboveHoneycomb() ?
                     R.layout.versiculo_hc_item_4:
@@ -108,7 +111,7 @@ public class VersiculosAdapter extends ArrayAdapter<Verse> {
         SpannableString spanText;
         Object indiceStyle;
 
-        if(itemType == 0 || itemType == 4 || itemType == 6) {
+        if(Arrays.asList(LINE.FIRST, LINE.HEADER_FIRST, LINE.SUBHEADER_FIRST).contains(itemType)) {
             indice = String.valueOf(capitulo);
             indiceStyle = new RelativeSizeSpan(2f);
         }

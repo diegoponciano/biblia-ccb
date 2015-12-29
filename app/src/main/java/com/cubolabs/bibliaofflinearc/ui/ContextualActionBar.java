@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.cubolabs.bibliaofflinearc.R;
 
+import org.jsoup.Jsoup;
+
 import greendao.Verse;
 
 public class ContextualActionBar implements ActionMode.Callback {
@@ -48,7 +50,7 @@ public class ContextualActionBar implements ActionMode.Callback {
                 else
                     versesToShare.append(" ");
 
-                versesToShare.append(verse.getText());
+                versesToShare.append(Jsoup.parse(verse.getText()).text());
                 versesToShare.append("\n");
 
                 if(!versesBottom)
@@ -71,9 +73,7 @@ public class ContextualActionBar implements ActionMode.Callback {
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, versiculosFragment.currentChapter());
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, "\n"+versesToShare.toString());
-                sharingIntent.putExtra(Intent.EXTRA_HTML_TEXT,
-                        Html.fromHtml(versesToShareHtml.toString())
-                );
+                sharingIntent.putExtra(Intent.EXTRA_HTML_TEXT, versesToShareHtml.toString());
                 versiculosFragment.startActivity(Intent.createChooser(sharingIntent, "Enviar via"));
                 break;
             case R.id.menu_item_copy:
