@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BibliaDaoGenerator/BibliaDaoGenerator.iml" filepath="$PROJECT_DIR$/BibliaDaoGenerator/BibliaDaoGenerator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bibliaccb.iml" filepath="$PROJECT_DIR$/bibliaccb.iml" />
+      <module fileurl="file:///mnt/sdb3/Projects/biblia-ccb/BibliaDaoGenerator/BibliaDaoGenerator.iml" filepath="/mnt/sdb3/Projects/biblia-ccb/BibliaDaoGenerator/BibliaDaoGenerator.iml" />
+      <module fileurl="file:///mnt/sdb3/Projects/biblia-ccb/app/app.iml" filepath="/mnt/sdb3/Projects/biblia-ccb/app/app.iml" />
+      <module fileurl="file:///mnt/sdb3/Projects/biblia-ccb/biblia-ccb.iml" filepath="/mnt/sdb3/Projects/biblia-ccb/biblia-ccb.iml" />
     </modules>
   </component>
 </project>
-
