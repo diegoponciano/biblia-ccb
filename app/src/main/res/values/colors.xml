@@ -24,4 +24,6 @@
     <drawable name="background_material_dark">#ff303030</drawable>
     <drawable name="transparent_color">#00000000</drawable>
 
+    <!--android:color="@android:color/primary_text_dark"-->
+
 </resources>
