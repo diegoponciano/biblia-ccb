@@ -17,7 +17,7 @@
     <string name="copy">Copiar</string>
     <string name="action_search">Procurar</string>
     <string name="action_full_screen">Tela cheia</string>
-    <string name="inline_preferences" >inline_preferences</string>
+    <string name="inline_preferences">inline_preferences</string>
     <string name="title_checkbox_preference">title_checkbox_preference</string>
     <string name="summary_checkbox_preference">summary_checkbox_preference</string>
     <string name="dialog_based_preferences">dialog_based_preferences</string>
@@ -47,4 +47,6 @@
     <string name="summary_versesbottom_preference">Com essa opção marcada, os versículos copiados são indicados no final.</string>
     <string name="summary_themes_preference">Seleciona entre o tema padrão (fundo claro) ou invertido, para a leitura.</string>
     <string name="swipe_to_change">Arraste pros lados pra mudar de página!</string>
+    <string name="title_activity_main_drawer">MainDrawerActivity</string>
+    <string name="title_activity_home">HomeActivity</string>
 </resources>

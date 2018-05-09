@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,12 +26,11 @@ import com.cubolabs.bibliaofflinearc.ui.SearchResultsPopup;
 import com.cubolabs.bibliaofflinearc.ui.ViewUtils;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private SearchView searchView;
     private SearchResultsPopup searchResultsPopup;
     private SharedPreferences preferences;
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void changeTheme() {
         String themePreference = preferences.getString("themes_preference", "AppTheme");
         switch(themePreference) {
@@ -55,9 +54,11 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
             changeTheme();
 
 	        ActionBar actionBar = getSupportActionBar();
-			actionBar.setTitle(R.string.app_title);
-			
-	        getSupportFragmentManager().beginTransaction()
+            if (actionBar != null) {
+                actionBar.setTitle(R.string.app_title);
+            }
+
+            getSupportFragmentManager().beginTransaction()
             .replace(R.id.container, LivrosListFragment.newInstance())
             .commit();
 	 	}
@@ -115,7 +116,6 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         return false;
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private void goesFullScreen(MenuItem item) {
         item.setIcon(R.drawable.ic_action_return_from_full_screen);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -128,10 +128,9 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
                     | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
-        preferences.edit().putBoolean("fullscreen_preference", true).commit();
+        preferences.edit().putBoolean("fullscreen_preference", true).apply();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void returnFromFullScreen(MenuItem item) {
         item.setIcon(R.drawable.ic_action_full_screen);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -139,7 +138,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
         if (ViewUtils.AboveKitkat()) {
             getWindow().getDecorView().setSystemUiVisibility(0);
         }
-        preferences.edit().putBoolean("fullscreen_preference", false).commit();
+        preferences.edit().putBoolean("fullscreen_preference", false).apply();
     }
 
     private void toggleFullScreen(MenuItem item) {
@@ -163,12 +162,7 @@ public class MainActivity extends ActionBarActivity implements SearchView.OnQuer
                 toggleFullScreen(item);
                 return true;
             case R.id.action_settings:
-                if (Build.VERSION.SDK_INT< Build.VERSION_CODES.HONEYCOMB) {
-                    startActivity(new Intent(this, EditPreferences.class));
-                }
-                else {
-                    startActivity(new Intent(this, EditPreferencesHC.class));
-                }
+                startActivity(new Intent(this, EditPreferencesHC.class));
                 return true;
         }
         return false;

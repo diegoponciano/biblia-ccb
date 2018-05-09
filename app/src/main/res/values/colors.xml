@@ -24,4 +24,13 @@
     <drawable name="background_material_dark">#ff303030</drawable>
     <drawable name="transparent_color">#00000000</drawable>
 
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorEerieBlack">#191716</color>
+    <color name="colorUrobilin">#E6AF2E</color>
+    <color name="colorGainsboro">#E0E2DB</color>
+    <color name="colorDarkSlateBlue">#3D348B</color>
+    <color name="colorBlackShadows">#BEB7A4</color>
+
 </resources>

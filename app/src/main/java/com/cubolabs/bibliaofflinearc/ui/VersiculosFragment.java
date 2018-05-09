@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.util.SparseBooleanArray;
 import android.view.GestureDetector;
@@ -104,7 +104,7 @@ public class VersiculosFragment extends ListFragment {
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActionBar actionBar =
-                ((ActionBarActivity) getActivity()).getSupportActionBar();
+                ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(this.currentChapter());
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -180,7 +180,7 @@ public class VersiculosFragment extends ListFragment {
 
                 if (checkedItemsCount(lv) > 0) {
                     if (actionMode == null) {
-                        actionMode = ((ActionBarActivity) getActivity())
+                        actionMode = ((AppCompatActivity) getActivity())
                                 .startSupportActionMode(new ContextualActionBar(VersiculosFragment.this));
                     }
                 }
