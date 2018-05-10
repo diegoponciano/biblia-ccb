@@ -4,9 +4,6 @@ import android.content.Context;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-import greendao.DaoMaster;
-import greendao.DaoSession;
-
 public class BibliaDatabase extends SQLiteAssetHelper {
 	//private static final String TAG = SQLiteAssetHelper.class.getSimpleName();
 	private static final String DATABASE_NAME = "biblia_arc.db";

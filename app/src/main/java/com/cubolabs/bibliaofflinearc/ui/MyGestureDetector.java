@@ -7,11 +7,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.Book;
 import com.cubolabs.bibliaofflinearc.data.ListaDeLivros;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
-
-import greendao.Book;
-import greendao.Verse;
+import com.cubolabs.bibliaofflinearc.data.Verse;
 
 public class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
     private VersiculosFragment versiculosFragment;

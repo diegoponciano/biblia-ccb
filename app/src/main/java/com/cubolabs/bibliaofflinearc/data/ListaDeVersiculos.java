@@ -5,11 +5,7 @@ import android.app.Activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.greenrobot.dao.query.QueryBuilder;
-import greendao.Book;
-import greendao.BookDao;
-import greendao.Verse;
-import greendao.VerseDao;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 public class ListaDeVersiculos {
     private VerseDao verseDao;
@@ -26,11 +22,11 @@ public class ListaDeVersiculos {
 
         QueryBuilder<Verse> pqb = verseDao.queryBuilder();
         List<Verse> verses = pqb.where(pqb.and(
-                        VerseDao.Properties.Book.eq(book.getAbbreviation()),
-                        VerseDao.Properties.Chapter.eq(capitulo))
-        )
-                .orderAsc(VerseDao.Properties.Verse)
-                .list();
+                                           VerseDao.Properties.Book.eq(book.getAbbreviation()),
+                                           VerseDao.Properties.Chapter.eq(capitulo))
+                                       )
+                                       .orderAsc(VerseDao.Properties.Verse)
+                                       .list();
 
         return new ArrayList<>(verses);
     }
@@ -50,9 +46,11 @@ public class ListaDeVersiculos {
     public ArrayList<String> Busca(String s) {
         s = "%" + s + "%";
         QueryBuilder<Verse> pqb = verseDao.queryBuilder();
+        pqb.join(Book.class, BookDao.Properties.Abbreviation);
+
         List<Verse> verses = pqb.where(pqb.or(VerseDao.Properties.Text.like(s),
                                                     VerseDao.Properties.Header.like(s)))
-                                       .orderAsc(VerseDao.Properties.Id)
+                                       .orderAsc(BookDao.Properties.Indice, VerseDao.Properties.Verse)
                                        .list();
 
         final ArrayList<String> listaDeVersos = new ArrayList<String>();

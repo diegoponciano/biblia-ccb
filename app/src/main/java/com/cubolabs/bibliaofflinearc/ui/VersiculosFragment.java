@@ -3,7 +3,6 @@ package com.cubolabs.bibliaofflinearc.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
@@ -24,11 +23,10 @@ import android.widget.ListView;
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeLivros;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
+import com.cubolabs.bibliaofflinearc.data.Verse;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import greendao.Verse;
 
 public class VersiculosFragment extends ListFragment {
     public static final String TAG = VersiculosFragment.class.getSimpleName();
