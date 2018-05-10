@@ -18,10 +18,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.Verse;
 
 import org.jsoup.Jsoup;
-
-import greendao.Verse;
 
 public class ContextualActionBar implements ActionMode.Callback {
     private VersiculosFragment versiculosFragment;

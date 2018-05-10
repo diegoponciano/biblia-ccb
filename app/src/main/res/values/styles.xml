@@ -6,6 +6,7 @@
     -->
     <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
     </style>
+
     <!-- Application theme. -->
     <style name="AppTheme" parent="@style/AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
@@ -15,6 +16,8 @@
         <item name="actionModeStyle">@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse</item>
         <item name="actionModeCloseDrawable">@drawable/ic_action_accept_dark</item>
         <item name="ic_action_copy">@drawable/ic_action_copy_dark</item>
+
+        <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 
     <style name="AppBaseThemeDark" parent="@style/Theme.AppCompat">
@@ -29,6 +32,8 @@
         <item name="actionModeCloseDrawable">@drawable/ic_action_accept_light</item>
         <item name="ic_action_copy">@drawable/ic_action_copy_light</item>
         <item name="android:background">@drawable/background_material_dark</item>
+
+        <item name="android:textColor">@android:color/primary_text_dark</item>
     </style>
 
 </resources>

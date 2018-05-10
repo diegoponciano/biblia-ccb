@@ -6,10 +6,6 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
-import greendao.Book;
-import greendao.BookDao;
-import greendao.VerseDao;
-
 public class ListaDeLivros {
 	private BibliaDatabase db;
 	private BookDao bookDao;

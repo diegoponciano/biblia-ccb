@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +26,7 @@ import com.cubolabs.bibliaofflinearc.ui.SearchResultsPopup;
 import com.cubolabs.bibliaofflinearc.ui.ViewUtils;
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private SearchView searchView;
     private SearchResultsPopup searchResultsPopup;
     private SharedPreferences preferences;

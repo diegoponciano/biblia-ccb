@@ -16,12 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.cubolabs.bibliaofflinearc.R;
+import com.cubolabs.bibliaofflinearc.data.Verse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import greendao.Verse;
-
 
 
 public class VersiculosAdapter extends ArrayAdapter<Verse> {

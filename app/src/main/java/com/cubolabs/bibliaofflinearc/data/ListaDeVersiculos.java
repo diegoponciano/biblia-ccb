@@ -5,11 +5,7 @@ import android.app.Activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.greenrobot.dao.query.QueryBuilder;
-import greendao.Book;
-import greendao.BookDao;
-import greendao.Verse;
-import greendao.VerseDao;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 public class ListaDeVersiculos {
     private VerseDao verseDao;
@@ -26,11 +22,11 @@ public class ListaDeVersiculos {
 
         QueryBuilder<Verse> pqb = verseDao.queryBuilder();
         List<Verse> verses = pqb.where(pqb.and(
-                        VerseDao.Properties.Book.eq(book.getAbbreviation()),
-                        VerseDao.Properties.Chapter.eq(capitulo))
-        )
-                .orderAsc(VerseDao.Properties.Verse)
-                .list();
+                                           VerseDao.Properties.Book.eq(book.getAbbreviation()),
+                                           VerseDao.Properties.Chapter.eq(capitulo))
+                                       )
+                                       .orderAsc(VerseDao.Properties.Verse)
+                                       .list();
 
         return new ArrayList<>(verses);
     }
@@ -47,15 +43,15 @@ public class ListaDeVersiculos {
         return listaDeNomes;
 	}
 
-    public ArrayList<String> Busca(String s) {
-        s = "%" + s + "%";
-        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
-        List<Verse> verses = pqb.where(pqb.or(VerseDao.Properties.Text.like(s),
-                                                    VerseDao.Properties.Header.like(s)))
-                                       .orderAsc(VerseDao.Properties.Id)
-                                       .list();
+    public ArrayList<String> Busca(String term) {
+        term = "%" + term + "%";
 
-        final ArrayList<String> listaDeVersos = new ArrayList<String>();
+        List<Verse> verses = verseDao.queryRawCreate(
+                ", books B WHERE T.'text' LIKE ? AND B.'abbreviation'=T.'book' ORDER BY B.'indice', T.'chapter', T.'verse' ASC",
+                term
+        ).list();
+
+        final ArrayList<String> listaDeVersos = new ArrayList<>();
 
         for (int i = 0; i < verses.size(); ++i) {
             String fullVerse = verses.get(i).getText() + "=>";

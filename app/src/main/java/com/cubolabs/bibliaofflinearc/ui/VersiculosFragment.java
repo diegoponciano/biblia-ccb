@@ -3,12 +3,11 @@ package com.cubolabs.bibliaofflinearc.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.util.SparseBooleanArray;
 import android.view.GestureDetector;
@@ -24,11 +23,10 @@ import android.widget.ListView;
 import com.cubolabs.bibliaofflinearc.R;
 import com.cubolabs.bibliaofflinearc.data.ListaDeLivros;
 import com.cubolabs.bibliaofflinearc.data.ListaDeVersiculos;
+import com.cubolabs.bibliaofflinearc.data.Verse;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import greendao.Verse;
 
 public class VersiculosFragment extends ListFragment {
     public static final String TAG = VersiculosFragment.class.getSimpleName();
@@ -79,15 +77,15 @@ public class VersiculosFragment extends ListFragment {
             ArrayList<Integer> versesIdcs = new ArrayList<Integer>();
             int len = getListView().getCount();
             SparseBooleanArray checked = getListView().getCheckedItemPositions();
-            String versesIdcsText = "";
+            StringBuilder versesIdcsText = new StringBuilder();
             for (int i = 0; i < len; i++) {
                 if (checked.get(i)) {
                     versesIdcs.add(i + 1);
-                    versesIdcsText += String.valueOf(i + 1) + ",";
+                    versesIdcsText.append(String.valueOf(i + 1)).append(",");
                 }
             }
-            if (versesIdcsText.endsWith(","))
-                versesIdcsText = versesIdcsText.substring(0, versesIdcsText.length() - 1);
+            if (versesIdcsText.toString().endsWith(","))
+                versesIdcsText = new StringBuilder(versesIdcsText.substring(0, versesIdcsText.length() - 1));
 
             if (Collections.max(versesIdcs) - Collections.min(versesIdcs) > versesIdcs.size() - 1) {
                 title += versesIdcsText;
@@ -104,25 +102,14 @@ public class VersiculosFragment extends ListFragment {
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActionBar actionBar =
-                ((ActionBarActivity) getActivity()).getSupportActionBar();
+                ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(this.currentChapter());
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    @SuppressLint("NewApi")
     private int checkedItemsCount(ListView listview) {
-        if (Build.VERSION.SDK_INT >= 11) {
-            return listview.getCheckedItemCount();
-        }
-        else {
-            int checkedCount = 0;
-            for (int i = 0 ; i < listview.getCheckedItemPositions().size(); i++) {
-                if(listview.getCheckedItemPositions().valueAt(i))
-                    checkedCount++;
-            }
-            return checkedCount;
-        }
+        return listview.getCheckedItemCount();
     }
 
     private void actionBarVersesCount(ListView lv) {
@@ -180,7 +167,7 @@ public class VersiculosFragment extends ListFragment {
 
                 if (checkedItemsCount(lv) > 0) {
                     if (actionMode == null) {
-                        actionMode = ((ActionBarActivity) getActivity())
+                        actionMode = ((AppCompatActivity) getActivity())
                                 .startSupportActionMode(new ContextualActionBar(VersiculosFragment.this));
                     }
                 }

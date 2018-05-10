@@ -7,9 +7,9 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="/mnt/sdb3/Projects/biblia-ccb" />
-            <option value="/mnt/sdb3/Projects/biblia-ccb/BibliaDaoGenerator" />
-            <option value="/mnt/sdb3/Projects/biblia-ccb/app" />
+            <option value="/mnt/sdb3/Projects/bibles/biblia-ccb" />
+            <option value="/mnt/sdb3/Projects/bibles/biblia-ccb/BibliaDaoGenerator" />
+            <option value="/mnt/sdb3/Projects/bibles/biblia-ccb/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
