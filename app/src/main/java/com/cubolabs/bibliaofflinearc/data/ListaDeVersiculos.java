@@ -43,17 +43,15 @@ public class ListaDeVersiculos {
         return listaDeNomes;
 	}
 
-    public ArrayList<String> Busca(String s) {
-        s = "%" + s + "%";
-        QueryBuilder<Verse> pqb = verseDao.queryBuilder();
-        pqb.join(Book.class, BookDao.Properties.Abbreviation);
+    public ArrayList<String> Busca(String term) {
+        term = "%" + term + "%";
 
-        List<Verse> verses = pqb.where(pqb.or(VerseDao.Properties.Text.like(s),
-                                                    VerseDao.Properties.Header.like(s)))
-                                       .orderAsc(BookDao.Properties.Indice, VerseDao.Properties.Verse)
-                                       .list();
+        List<Verse> verses = verseDao.queryRawCreate(
+                ", books B WHERE T.'text' LIKE ? AND B.'abbreviation'=T.'book' ORDER BY B.'indice', T.'chapter', T.'verse' ASC",
+                term
+        ).list();
 
-        final ArrayList<String> listaDeVersos = new ArrayList<String>();
+        final ArrayList<String> listaDeVersos = new ArrayList<>();
 
         for (int i = 0; i < verses.size(); ++i) {
             String fullVerse = verses.get(i).getText() + "=>";
